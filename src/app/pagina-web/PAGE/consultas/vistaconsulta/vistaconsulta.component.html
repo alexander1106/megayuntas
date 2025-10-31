@@ -1,0 +1,122 @@
+<div class="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-4">
+  <!-- Contenido Principal -->
+  <div class="w-full lg:w-3/4">
+    <ng-container *ngIf="consulta; else cargandoConsulta">
+      <!-- Título y exportar -->
+      <div class="flex items-center justify-between flex-wrap gap-2 sm:gap-4 mb-2">
+        <h2 class="text-lg font-semibold">{{ consulta.tituloConsulta }}</h2>
+        <button class="flex items-center px-3 py-1 bg-orange-300 hover:bg-orange-400 rounded-md text-sm">
+          <span class="mr-1">📤</span> Exportar
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-500">{{ consulta.nombreProducto }}</p>
+      <p class="mt-2 text-sm text-gray-700 text-justify">{{ consulta.descripcionConsulta }}</p>
+
+      <!-- Mostrar pasos agrupados -->
+      <div *ngIf="pasosAgrupados.length > 0">
+        <div *ngFor="let grupo of mostrarTodosLosPasos ? pasosAgrupados : pasosAgrupados.slice(0, 2)"
+             class="border border-green-500 p-3 rounded-md mt-4">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Descripción -->
+            <div class="flex-1">
+              <h3 class="font-semibold text-sm mb-1">{{ grupo.tituloPaso }}</h3>
+              <div class="text-sm text-gray-700 text-justify" [innerHTML]="grupo.descripcionPaso"></div>
+            </div>
+
+            <!-- Imagen -->
+            <img *ngIf="grupo.imagenes.length > 0"
+                 [src]="'assets/publicaciones_img/' + grupo.imagenes[0]"
+                 alt="Imagen paso"
+                 class="w-full sm:w-40 max-w-[160px] h-auto object-contain border rounded-md shadow-sm mx-auto sm:mx-0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Ver más -->
+      <div *ngIf="pasosAgrupados.length > 2 && !mostrarTodosLosPasos" class="mt-2">
+        <button (click)="verMasPasos()"
+                class="px-3 py-1 bg-teal-400 hover:bg-teal-500 text-white text-sm rounded-md">
+          Ver más...
+        </button>
+      </div>
+
+      <!-- 💬 Caja de comentarios -->
+      <div class="mt-8 bg-white shadow-md border border-gray-200 rounded-xl p-5">
+        <div class="flex items-start gap-4">
+          <div class="text-3xl pt-1 text-gray-500">👤</div>
+          <div class="flex-1 relative">
+            <textarea
+              [(ngModel)]="comentario"
+              placeholder="Escribe tu comentario aquí..."
+              class="w-full h-28 resize-none border border-gray-300 rounded-xl p-4 pr-32 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-justify placeholder:text-gray-400 placeholder:text-sm placeholder:align-top placeholder:leading-5"
+            ></textarea>
+            <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+              <button
+                class="text-xl hover:scale-110 transition-transform"
+                title="Inserta Emoji"
+              >
+                😊
+              </button>
+              <button
+                (click)="comentar()"
+                class="bg-teal-500 hover:bg-teal-600 text-white text-sm px-5 py-1.5 rounded-md shadow-md transition-all"
+              >
+                Comentar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comentarios -->
+      <div class="mt-10 border border-gray-400 rounded-md">
+        <div class="bg-orange-400 text-black font-semibold px-4 py-2 text-lg rounded-t-md">
+          Comentarios ({{ comentarios.length }})
+        </div>
+
+        <div class="bg-white px-4 py-2 space-y-3 max-h-72 overflow-y-auto">
+          <div *ngIf="comentarios.length > 0; else sinComentarios">
+            <div *ngFor="let c of comentarios" class="bg-gray-100 p-3 rounded-md shadow-sm">
+              <div class="flex items-start gap-3">
+                <div class="text-4xl">👤</div>
+                <div>
+                  <p class="font-semibold text-sm">{{ c.nombre }}</p>
+                  <p class="text-xs text-gray-500">{{ c.fecha }}</p>
+                  <p class="text-sm mt-1 text-gray-800 text-justify">{{ c.texto }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #sinComentarios>
+            <p class="text-sm text-gray-600 italic">No hay comentarios aún.</p>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Cargando o error -->
+    <ng-template #cargandoConsulta>
+      <div *ngIf="error; else cargando">
+        <p class="text-red-600 text-sm font-medium">{{ error }}</p>
+      </div>
+      <ng-template #cargando>
+        <p class="text-gray-500 text-sm italic">Cargando consulta...</p>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <!-- Búsquedas Recientes -->
+  <div class="w-full lg:w-64 border border-green-500 p-4 bg-orange-50 rounded-md h-fit">
+    <h4 class="font-semibold mb-2">🔍 Búsquedas Recientes</h4>
+    <ul class="text-sm list-disc list-inside text-gray-800">
+      <li *ngFor="let busqueda of busquedasRecientes">
+        <span
+          class="text-blue-600 cursor-pointer hover:underline"
+          (click)="irAVistaConsulta(busqueda.titulo)">
+          {{ busqueda.titulo }}
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>

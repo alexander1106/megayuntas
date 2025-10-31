@@ -1,0 +1,103 @@
+<header class="h-14 flex items-center justify-between px-2 py-2 bg-gradient-to-r from-[#F28C7F] from-50% to-[#00A991] drop-shadow z-50 relative">
+    <!-- Desktop version - hidden on mobile -->
+    <div class="hidden md:flex items-center space-x-3" *ngFor="let item of menuItems3">
+      <a [routerLink]="[item.route]" class="p-2 hover:bg-white/20 rounded leading-none transition-colors">
+        <iconify-icon [icon]="item.icon" class="text-2xl text-white"></iconify-icon>
+      </a>
+    </div>
+
+    <!-- Mobile version - visible only on mobile -->
+    <div class="md:hidden flex items-center space-x-3">
+      <!-- Mobile menu button -->
+      <button 
+        (click)="toggleMobileMenu()" 
+        class="p-2 hover:bg-white/20 rounded leading-none transition-colors">
+        <iconify-icon 
+          [icon]="isMobileMenuOpen ? 'mdi:chevron-double-up' : 'mdi:chevron-double-down'" 
+          class="text-2xl text-white transition-transform duration-200">
+        </iconify-icon>
+      </button>
+      
+      <!-- Home button -->
+      <a [routerLink]="['/admin']" class="p-2 hover:bg-white/20 rounded leading-none transition-colors">
+        <iconify-icon icon="mdi:home-outline" class="text-2xl text-white"></iconify-icon>
+      </a>
+    </div>
+  
+    <!-- right: user menu -->
+    <div class="flex items-center space-x-3 relative">
+        <iconify-icon icon="mdi:account-circle-outline" class="text-2xl text-white"></iconify-icon>
+      
+      <span class="text-white font-medium hidden sm:block">Bienvenido, {{ nombreCompleto }}</span>
+      
+      <!-- dropdown container -->
+      <div class="relative">
+        <!-- dropdown button -->
+        <button 
+          (click)="toggleDropdown()" 
+          (document:click)="onDocumentClick($event)"
+          #dropdownButton
+          aria-label="User menu" 
+          class="p-1 hover:bg-white/20 rounded transition-all duration-200 ease-in-out"
+          [class.bg-white-20]="isDropdownOpen">
+          <iconify-icon 
+            icon="mdi:chevron-down" 
+            class="text-2xl text-white transition-transform duration-200 ease-in-out"
+            [class.rotate-180]="isDropdownOpen">
+          </iconify-icon>
+        </button>
+        
+        <!-- dropdown menu -->
+        <div 
+          *ngIf="isDropdownOpen"
+          class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[9999]
+                 animate-in slide-in-from-top-2 fade-in-0 duration-200">
+          
+          <!-- User info section -->
+          <div class="px-4 py-3 border-b border-gray-100">
+            <p class="text-sm font-semibold text-gray-900 truncate">{{ nombreCompleto }}</p>
+            <p class="text-xs text-gray-500 truncate">{{ nombreRol }}</p>
+          </div>
+          
+          <!-- Menu options -->
+          <div class="py-1">
+            <button 
+              (click)="logout()"
+              class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 
+                     flex items-center space-x-3 transition-colors duration-150 group">
+              <iconify-icon icon="mdi:logout" class="text-lg text-gray-400 group-hover:text-red-500 transition-colors"></iconify-icon>
+              <span class="group-hover:text-red-600">Cerrar sesión</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+</header>
+
+<!-- Mobile Menu Overlay - Only visible on mobile -->
+<div 
+  *ngIf="isMobileMenuOpen" 
+  class="md:hidden fixed inset-0 z-[60] bg-black bg-opacity-50"
+  (click)="closeMobileMenu()">
+</div>
+
+<!-- Mobile Menu - Only visible on mobile -->
+<div 
+  *ngIf="isMobileMenuOpen"
+  class="md:hidden fixed top-14 left-0 right-0 bg-[#00A991] shadow-lg z-[70] transform transition-transform duration-300 ease-in-out"
+  [class.translate-y-0]="isMobileMenuOpen"
+  [class.-translate-y-full]="!isMobileMenuOpen">
+  
+  <nav class="py-4">
+    <div class="space-y-1">
+      <a 
+        *ngFor="let item of mobileMenuItems" 
+        [routerLink]="[item.route]"
+        (click)="closeMobileMenu()"
+        class="flex items-center px-6 py-3 text-white hover:bg-white/10 transition-colors duration-200">
+        <iconify-icon [icon]="item.icon" class="text-xl mr-4"></iconify-icon>
+        <span class="font-medium">{{ item.label }}</span>
+      </a>
+    </div>
+  </nav>
+</div>

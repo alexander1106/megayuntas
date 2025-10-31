@@ -1,0 +1,115 @@
+/* Estilos para el editor Quill - Altura fija con scroll interno */
+::ng-deep .ql-editor {
+  border: none !important;
+  padding: 12px !important;
+  overflow-y: auto !important;
+  height: calc(100% - 42px) !important;
+  max-height: calc(100% - 42px) !important;
+  min-height: 200px !important;
+}
+
+::ng-deep .ql-toolbar {
+  border-bottom: 1px solid #e5e7eb !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  position: sticky !important;
+  top: 0 !important;
+  background: white !important;
+  z-index: 10 !important;
+  flex-shrink: 0 !important;
+}
+
+::ng-deep .ql-container {
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  height: calc(100% - 42px) !important;
+  overflow: hidden !important;
+}
+
+::ng-deep quill-editor {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+::ng-deep quill-editor .ql-toolbar {
+  flex-shrink: 0 !important;
+}
+
+::ng-deep quill-editor .ql-container {
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+/* Evitar que el editor se expanda */
+::ng-deep .ql-editor p {
+  margin-bottom: 0.5em !important;
+}
+
+::ng-deep .ql-editor:focus {
+  outline: none !important;
+}
+
+/* Scrollbar personalizado para el editor */
+::ng-deep .ql-editor::-webkit-scrollbar {
+  width: 6px;
+}
+
+::ng-deep .ql-editor::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::ng-deep .ql-editor::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::ng-deep .ql-editor::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Scrollbar personalizado para el grid de fotos */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animación para el modal */
+.modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effects para las imágenes */
+.image-preview:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}

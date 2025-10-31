@@ -1,0 +1,137 @@
+/* Animaciones para el área de drag & drop */
+.drag-over {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+/* Animación de pulso para el estado de carga */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Animación de rotación para el spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Efectos hover para los botones */
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Transiciones suaves para los estados */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.transition-colors {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Estilos para la barra de progreso */
+.progress-bar {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  transition: width 0.3s ease;
+}
+
+/* Efectos de hover para el área de subida */
+.upload-area:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+/* Animación de entrada del modal */
+.modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Estilos para los documentos existentes */
+.document-item {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.document-item:hover {
+  background-color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .upload-area {
+    padding: 2rem 1rem;
+  }
+}
+
+/* Estados de validación */
+.border-success {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.border-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.border-warning {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+/* Efectos de focus para accesibilidad */
+button:focus,
+input:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animación para los mensajes */
+.message-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

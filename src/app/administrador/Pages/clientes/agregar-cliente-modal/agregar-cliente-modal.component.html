@@ -1,0 +1,171 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
+  <!-- Modal -->
+  <div class="w-full max-w-2xl my-4 bg-gray-200 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto">
+    <!-- Encabezado -->
+    <div class="p-3 border-b border-gray-300">
+      <h2 class="text-2xl font-bold text-black">Nuevo cliente</h2>
+    </div>
+    
+    <!-- Cuerpo del formulario -->
+    <div class="p-4 space-y-4">
+      <!-- Empresa -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Empresa :</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.empresa"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Opinion -->
+      <div class="flex items-start">
+        <label class="w-32 font-medium text-black">Opinion:</label>
+        <textarea 
+          [(ngModel)]="clienteNuevo.opinion"
+          class="flex-1 p-2 border border-gray-300 rounded h-32 bg-white"
+        ></textarea>
+      </div>
+      
+      <!-- Ruc -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Ruc :</label>
+        <div class="flex-1 flex">
+          <input 
+            type="text" 
+            [(ngModel)]="clienteNuevo.ruc"
+            class="flex-1 border border-gray-300 rounded bg-white"
+          >
+          <button 
+            (click)="consultarRUC()"
+            class="ml-2 px-3 bg-red-300 text-black rounded flex items-center"
+          >
+            <iconify-icon icon="mdi:magnify"></iconify-icon>
+            <span class="ml-1">Consulta RUC</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Teléfono -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Teléfono :</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.telefono"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Contacto -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Contacto :</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.contacto"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Dirección -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Dirección:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.direccion"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Localidad -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Localidad :</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.localidad"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Nombre Comercial -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Nombre Comercial:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.nombreComercial"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Grupo -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Grupo:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="clienteNuevo.grupo"
+          class="flex-1 border border-gray-300 rounded bg-white"
+        >
+      </div>
+      
+      <!-- Mostrar Web -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Mostrar Web</label>
+        <div class="relative inline-block w-12 h-6 bg-white rounded-full border border-gray-300">
+          <input 
+            type="checkbox" 
+            id="toggle-web" 
+            [(ngModel)]="clienteNuevo.mostrarWeb"
+            class="sr-only"
+          >
+          <label 
+            for="toggle-web" 
+            class="block overflow-hidden h-6 rounded-full bg-white cursor-pointer"
+          >
+            <span 
+              class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out"
+              [ngClass]="clienteNuevo.mostrarWeb ? 'bg-teal-500 transform translate-x-6' : 'bg-orange-500'"
+            ></span>
+            <span 
+              *ngIf="!clienteNuevo.mostrarWeb" 
+              class="absolute right-1 text-orange-500 font-bold"
+            >✕</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Logo Imagen -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Logo Imagen:</label>
+        <button 
+          (click)="fileInput.click()"
+          class="px-3 py-2 bg-gray-300 text-black rounded flex items-center"
+        >
+          <iconify-icon icon="mdi:upload"></iconify-icon>
+          <span class="ml-1">Subir imagen</span>
+        </button>
+        <input 
+          #fileInput 
+          type="file" 
+          accept="image/*" 
+          (change)="subirImagen($event)" 
+          class="hidden"
+        >
+      </div>
+      
+      <!-- Botones -->
+      <div class="flex justify-end space-x-4 mt-6">
+        <button 
+          (click)="guardarCliente()"
+          class="px-6 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition"
+        >
+          Guardar
+        </button>
+        <button 
+          (click)="cerrarModal()"
+          class="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

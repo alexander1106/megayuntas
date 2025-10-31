@@ -1,0 +1,203 @@
+/* Desktop: Mantener diseño original - NO cambiar nada */
+/* El diseño desktop se mantiene exactamente igual */
+
+/* MÓVIL: Replicar diseño original exacto */
+@media (max-width: 767px) {
+  /* Ocultar la versión desktop en móvil */
+  .desktop-header,
+  .desktop-table {
+    display: none !important;
+  }
+
+  /* Mostrar solo la versión móvil */
+  .mobile-version {
+    display: block;
+  }
+
+  /* Ajustar contenedor principal para móvil */
+  .max-w-screen.mx-5 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .flex-1.w-full.mt-2.p-1 {
+    padding: 0.5rem;
+  }
+
+  /* Header móvil - diseño original */
+  .mobile-header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  /* Campo de búsqueda - estilo original */
+  .mobile-header input[type="text"] {
+    border: 2px solid #99f6e4;
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+
+  .mobile-header input[type="text"]:focus {
+    outline: none;
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+
+  /* Stats card - diseño original */
+  .mobile-header .bg-white {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Cards de clientes - diseño original */
+  .mobile-cards .bg-white {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .mobile-cards .bg-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Header de las cards - verde teal */
+  .mobile-cards .bg-teal-500 {
+    background-color: #14b8a6;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Badge "No Web" - estilo original */
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+
+  .text-red-800 {
+    color: #991b1b;
+  }
+
+  /* Layout de información - dos columnas */
+  .mobile-cards .grid.grid-cols-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  /* Espaciado entre elementos de información */
+  .mobile-cards .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+
+  /* Botones de acción - alineados a la derecha */
+  .mobile-cards .flex.space-x-3 {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  /* Estilos específicos para cada botón */
+  .bg-yellow-50 {
+    background-color: #fefce8;
+    border: 1px solid #fde047;
+  }
+
+  .bg-yellow-50:hover {
+    background-color: #fef3c7;
+    transform: scale(1.02);
+  }
+
+  .text-yellow-700 {
+    color: #a16207;
+  }
+
+  .bg-teal-50 {
+    background-color: #f0fdfa;
+    border: 1px solid #5eead4;
+  }
+
+  .bg-teal-50:hover {
+    background-color: #ccfbf1;
+    transform: scale(1.02);
+  }
+
+  .text-teal-700 {
+    color: #0f766e;
+  }
+
+  .bg-red-50 {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+  }
+
+  .bg-red-50:hover {
+    background-color: #fee2e2;
+    transform: scale(1.02);
+  }
+
+  .text-red-700 {
+    color: #b91c1c;
+  }
+
+  /* Transiciones suaves */
+  .mobile-cards button {
+    transition: all 0.2s ease-in-out;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* Iconos en los botones */
+  .mobile-cards button iconify-icon {
+    margin-right: 0.25rem;
+  }
+
+  /* Animación para el estado vacío */
+  .text-center {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Espaciado mejorado para elementos táctiles */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Mejoras de accesibilidad */
+  button:focus {
+    outline: 2px solid #14b8a6;
+    outline-offset: 2px;
+  }
+}
+
+/* Desktop: Ocultar versión móvil */
+@media (min-width: 768px) {
+  .mobile-version {
+    display: none;
+  }
+}
+
+/* Estados de carga */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}

@@ -1,0 +1,60 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
+  <!-- Modal -->
+  <div class="w-full max-w-lg my-4 bg-gray-200 rounded-lg shadow-lg max-h-[70vh] overflow-y-auto">
+    <!-- Encabezado -->
+    <div class="p-3 border-b border-gray-300">
+      <h2 class="text-3xl font-bold text-black">Editar Usuario</h2>
+    </div>
+    
+    <!-- Cuerpo del formulario -->
+    <div class="p-4 space-y-4">
+      <!-- Nombre -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Nombre :</label>
+        <input 
+          type="text" 
+          [(ngModel)]="usuarioEditado.nombres"
+          class="flex-1 border border-gray-300 rounded px-2 py-1 bg-white"
+        >
+      </div>
+      
+      <!-- Apellidos -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Apellidos :</label>
+        <div class="flex-1 flex">
+          <input 
+            type="text" 
+            [(ngModel)]="usuarioEditado.apellidos"
+            class="flex-1 border border-gray-300 rounded px-2 py-1 bg-white"
+          >
+        </div>
+      </div>
+      
+      <!-- Email -->
+      <div class="flex items-center">
+        <label class="w-32 font-medium text-black">Email: </label>
+        <input 
+          type="text" 
+          [(ngModel)]="usuarioEditado.email"
+          class="flex-1 border border-gray-300 rounded px-2 py-1 bg-white"
+        >
+      </div>
+      
+      <!-- Botones -->
+      <div class="flex justify-end space-x-4 mt-6">
+        <button 
+          (click)="guardarUsuario()"
+          class="px-6 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition"
+        >
+          Guardar
+        </button>
+        <button 
+          (click)="cerrarModal()"
+          class="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

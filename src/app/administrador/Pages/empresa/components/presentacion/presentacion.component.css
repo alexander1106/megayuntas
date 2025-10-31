@@ -1,0 +1,82 @@
+/* Estilos para el editor Quill */
+.ql-editor {
+  min-height: 200px;
+}
+
+.mobile-editor .ql-editor {
+  min-height: 250px;
+  font-size: 14px;
+}
+
+/* Responsive para el contenedor principal */
+@media (max-width: 767px) {
+  .prose {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+/* Estilos para el contenido HTML renderizado */
+.prose {
+  color: #374151;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  color: #111827;
+  font-weight: 600;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+/* Animación de carga */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estados de botones */
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Mejoras para móvil */
+@media (max-width: 767px) {
+  .mobile-editor {
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .mobile-editor .ql-toolbar {
+    border-top: none;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+  }
+
+  .mobile-editor .ql-container {
+    border-bottom: 1px solid #e5e7eb;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+  }
+}

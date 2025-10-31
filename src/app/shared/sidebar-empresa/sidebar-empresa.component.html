@@ -1,0 +1,44 @@
+<!-- DESKTOP VERSION - Diseño corregido -->
+<div class="desktop-sidebar">
+  <!-- Lista de elementos del menú -->
+  <div class="flex flex-col py-2">
+    <!-- Elemento de menú -->
+    <div 
+      *ngFor="let item of menuItems" 
+      class="menu-item cursor-pointer" 
+      [class.active]="isActive(item.route)" 
+      (click)="navigateTo(item.route)">
+      
+      <!-- Contenedor unificado -->
+      <div class="unified-container" [ngClass]="isActive(item.route) ? item.activeColor : item.color">
+
+        <!-- Icono (siempre visible y centrado) -->
+        <div class="icon-part">
+          <iconify-icon [icon]="item.icon" class="text-2xl text-white"></iconify-icon>
+        </div>
+        
+        <!-- Etiqueta (expandible) -->
+        <div class="label-part">
+          <span class="label-text">{{ item.label }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE VERSION - Navegación horizontal -->
+<div class="mobile-sidebar">
+  <!-- Navegación horizontal móvil -->
+  <div class="bg-white border-b border-gray-200 px-2 py-2 mobile-nav mobile-shadow-sm">
+    <div class="flex space-x-2 min-w-max">
+      <button 
+        *ngFor="let item of menuItems" 
+        (click)="navigateTo(item.route)"
+        [class]="getMobileButtonClass(item.route)"
+        class="mobile-nav-button flex flex-col items-center justify-center px-3 py-2 rounded-lg">
+        <iconify-icon [icon]="item.icon" class="text-lg mb-1"></iconify-icon>
+        <span class="text-xs font-medium truncate">{{ item.label }}</span>
+      </button>
+    </div>
+  </div>
+</div>

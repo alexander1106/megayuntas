@@ -1,0 +1,144 @@
+<div class="flex flex-col bg-white rounded-md shadow-sm">
+  <!-- Encabezado -->
+  <div class="p-3 md:p-4">
+    <div class="flex items-center pb-2 md:pl-2 pb-3 border-b border-gray-100">
+      <iconify-icon icon="mdi:flag" class="text-xl md:text-2xl mr-2"></iconify-icon>
+      <h2 class="text-lg md:text-xl font-semibold">Misión</h2>
+    </div>
+
+    <!-- DESKTOP VERSION -->
+    <div class="hidden md:block">
+      <!-- Contenedor gris con altura fija -->
+      <div class="rounded-md px-4 py-2 w-full max-w-full mx-auto bg-gray-200" [style.height.px]="299">
+        <div class="rounded-md text-sm h-full" style="height: 100%;">
+      
+          <!-- Vista previa -->
+          <ng-container *ngIf="!showEditor">
+            <div class="bg-gray-200 rounded p-4 h-full overflow-auto">
+              <div class="prose prose-sm max-w-none" [innerHTML]="htmlContent || 'No hay contenido disponible'"></div>
+            </div>
+          </ng-container>
+
+          <!-- Editor -->
+          <ng-container *ngIf="showEditor">
+            <div class="bg-white rounded h-full">
+              <quill-editor
+                [(ngModel)]="htmlContent"
+                class="bg-white w-full flex-1 h-full ql-editor ql-blank"
+                [styles]="{ height: '70%' }"
+                placeholder="Define la misión de tu empresa: su propósito, objetivos y compromiso...">
+              </quill-editor>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Botones Desktop -->
+      <div class="flex justify-end mt-4 space-x-2">
+        <button 
+          (click)="showEditor = !showEditor"
+          class="flex items-center bg-orange-400 text-white rounded-full px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm hover:bg-orange-500 transition-colors duration-200">
+          <iconify-icon icon="mdi:pencil" class="mr-1 md:mr-2"></iconify-icon>
+          {{ showEditor ? 'Cerrar' : 'Editar' }}
+        </button>
+
+        <button 
+          *ngIf="showEditor"
+          (click)="guardarContenido()"
+          [disabled]="isSaving"
+          class="flex items-center bg-green-500 text-white rounded-full px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm hover:bg-green-600 disabled:opacity-50 transition-colors duration-200">
+          <iconify-icon 
+            [icon]="isSaving ? 'mdi:loading' : 'mdi:content-save'" 
+            class="mr-1 md:mr-2"
+            [class.animate-spin]="isSaving">
+          </iconify-icon>
+          {{ isSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- MOBILE VERSION -->
+    <div class="md:hidden">
+      <!-- Vista previa móvil -->
+      <ng-container *ngIf="!showEditor">
+        <div class="bg-gray-100 rounded-lg p-4 mt-4 min-h-[200px]">
+          <div class="prose prose-sm max-w-none text-sm leading-relaxed" [innerHTML]="htmlContent || 'No hay contenido disponible'"></div>
+        </div>
+        
+        <!-- Botón editar móvil -->
+        <div class="mt-4">
+          <button 
+            (click)="showEditor = !showEditor"
+            class="w-full flex items-center justify-center bg-orange-400 text-white rounded-lg px-4 py-3 text-sm font-medium hover:bg-orange-500 transition-colors duration-200">
+            <iconify-icon icon="mdi:pencil" class="mr-2 text-lg"></iconify-icon>
+            Editar Misión
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Editor móvil -->
+      <ng-container *ngIf="showEditor">
+        <!-- Header del editor móvil -->
+        <div class="bg-gray-50 rounded-t-lg p-3 mt-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <iconify-icon icon="mdi:format-text" class="text-lg text-gray-600 mr-2"></iconify-icon>
+              <span class="text-sm font-medium text-gray-700">Editor de Misión</span>
+            </div>
+            <button 
+              (click)="showEditor = false"
+              class="p-1 hover:bg-gray-200 rounded transition-colors">
+              <iconify-icon icon="mdi:close" class="text-lg text-gray-600"></iconify-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Editor móvil simplificado -->
+        <div class="bg-white rounded-b-lg border border-gray-200 border-t-0">
+          <quill-editor
+            [(ngModel)]="htmlContent"
+            class="mobile-editor"
+            [styles]="{ minHeight: '250px' }"
+            placeholder="Define la misión de tu empresa: su propósito, objetivos y compromiso con los clientes...">
+          </quill-editor>
+        </div>
+
+        <!-- Información de ayuda -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+          <div class="flex items-start">
+            <iconify-icon icon="mdi:target" class="text-blue-500 text-lg mr-2 mt-0.5"></iconify-icon>
+            <div class="text-xs text-blue-700">
+              <p class="font-medium mb-1">Elementos clave de una misión:</p>
+              <p>• <strong>Propósito:</strong> ¿Para qué existe tu empresa?</p>
+              <p>• <strong>Actividad:</strong> ¿Qué productos/servicios ofreces?</p>
+              <p>• <strong>Valores:</strong> ¿Cómo trabajas?</p>
+              <p>• <strong>Beneficiarios:</strong> ¿A quién sirves?</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones móviles -->
+        <div class="flex space-x-3 mt-4">
+          <button 
+            (click)="showEditor = false"
+            class="flex-1 flex items-center justify-center bg-orange-400 text-white rounded-lg px-4 py-3 text-sm font-medium hover:bg-gray-600 transition-colors duration-200">
+            <iconify-icon icon="mdi:close" class="mr-2"></iconify-icon>
+            Cancelar
+          </button>
+          
+          <button 
+            (click)="guardarContenido()"
+            [disabled]="isSaving"
+            class="flex-1 flex items-center justify-center bg-green-500 text-white rounded-lg px-4 py-3 text-sm font-medium hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            <iconify-icon 
+              [icon]="isSaving ? 'mdi:loading' : 'mdi:content-save'" 
+              class="mr-2"
+              [class.animate-spin]="isSaving">
+            </iconify-icon>
+            {{ isSaving ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

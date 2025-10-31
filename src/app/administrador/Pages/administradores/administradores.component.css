@@ -1,0 +1,31 @@
+/* Animaciones para las cards móviles */
+@media (max-width: 767px) {
+  .card-enter {
+    animation: slideInUp 0.3s ease-out;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mejoras para el scroll en móvil */
+@media (max-width: 767px) {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Estilos para el input de búsqueda móvil */
+@media (max-width: 767px) {
+  .search-input-mobile:focus {
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+}

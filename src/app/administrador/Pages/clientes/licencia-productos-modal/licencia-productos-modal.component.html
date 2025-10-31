@@ -1,0 +1,155 @@
+<div 
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+  *ngIf="mostrar" 
+  (click)="cerrarModal()">
+  
+  <div 
+    class="bg-white rounded-lg w-[90%] max-w-7xl max-h-[90vh] overflow-hidden shadow-xl"
+    (click)="$event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h2 class="text-xl font-semibold text-gray-800 m-0">
+        Producto del Cliente
+      </h2>
+    </div>
+    
+    <!-- Body -->
+    <div class="px-6 py-4 max-h-[65vh] overflow-y-auto">
+      <!-- Empresa Info -->
+      <div 
+        class="flex justify-between items-center mb-4 pb-3 border-b border-gray-200" 
+        *ngIf="cliente">
+        <div class="text-sm text-gray-800">
+          <strong>Empresa:</strong> {{ cliente.nombreEmpresa }}
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay cliente -->
+      <div 
+        class="text-center py-8 text-gray-500" 
+        *ngIf="!cliente">
+        <p class="text-lg">No se ha seleccionado ningún cliente</p>
+      </div>
+
+      <!-- Tabla Container -->
+      <div class="overflow-x-auto" *ngIf="cliente">
+        <!-- Mensaje cuando no hay licencias -->
+        <div 
+          class="text-center py-8 text-gray-500" 
+          *ngIf="!cliente.licencias || cliente.licencias.length === 0">
+          <p class="text-lg">Este cliente no tiene licencias registradas</p>
+          <button 
+            class="mt-4 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors"
+            (click)="agregarLicencia()">
+            Agregar Primera Licencia
+          </button>
+        </div>
+
+        <!-- Tabla de licencias -->
+        <table class="w-full border-collapse border border-gray-200" *ngIf="cliente.licencias && cliente.licencias.length > 0">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Sistema
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Fech. Instalación
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Fech. Actualización
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Versión
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Usuario Lic.
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Nro. Serie Licencia
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Status
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-r border-gray-200 text-sm whitespace-nowrap">
+                Lic. Activa
+              </th>
+              <th class="px-3 py-3 text-center font-semibold text-gray-600 border-b border-gray-200 text-sm whitespace-nowrap">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              *ngFor="let licencia of cliente.licencias; trackBy: trackByLicencia" 
+              class="hover:bg-gray-50 transition-colors duration-150">
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.sistema }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.fechInstalacion }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.fechActualizacion }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.version }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.usuarioLic }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.nroSerieLicencia }}
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                <span class="text-green-600 font-semibold">
+                  {{ licencia.status }}
+                </span>
+              </td>
+              <td class="px-3 py-3 border-b border-r border-gray-200 text-sm text-center align-middle">
+                {{ licencia.licActiva }}
+              </td>
+              <td class="px-3 py-3 border-b border-gray-200 text-center align-middle">
+                <div class="flex justify-center items-center space-x-1">
+                  <button 
+                    class="p-1 rounded hover:bg-yellow-100 transition-colors duration-150"
+                    (click)="descargarLicencia(licencia)"
+                    title="Descargar">
+                    <iconify-icon icon="mdi:tray-arrow-up" class="text-yellow-600 text-xl"></iconify-icon>
+                  </button>
+                  <button 
+                    class="p-1 rounded hover:bg-green-100 transition-colors duration-150"
+                    (click)="editarLicencia(licencia)"
+                    title="Editar">
+                    <iconify-icon icon="mdi:square-edit-outline" class="text-green-600 text-xl"></iconify-icon>
+                  </button>
+                  <button 
+                    class="p-1 rounded hover:bg-red-100 transition-colors duration-150"
+                    (click)="eliminarLicencia(licencia)"
+                    title="Eliminar">
+                    <iconify-icon icon="mdi:delete-outline" class="text-red-600 text-xl "></iconify-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+      <button 
+        class="px-4 py-2 bg-cyan-600 text-white rounded font-semibold text-sm min-w-[80px] hover:bg-cyan-700 transition-colors duration-150 disabled:opacity-50"
+        [disabled]="!cliente"
+        (click)="guardarCambios()">
+        Guardar
+      </button>
+      <button 
+        class="px-4 py-2 bg-red-600 text-white rounded font-semibold text-sm min-w-[80px] hover:bg-red-700 transition-colors duration-150"
+        (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,285 @@
+<div class="bg-gray-100 w-full min-h-screen flex flex-col">
+  <div class="flex-1 w-full mt-2 p-1 md:p-2">
+    <div class="max-w-full mx-5">
+      
+      <!-- HEADER ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-header bg-[#00796B] grid grid-cols-1 md:grid-cols-2 gap-4 px-2 py-1">
+        <h1 class="text-2xl md:text-2xl font-bold text-white">
+          Productos
+        </h1>
+        <!-- DERECHA: buscador -->
+        <div class="flex-col md:flex-row flex items-right justify-end">
+          <label for="buscar" class="text-sm flex items-center text-white font-medium mr-2 whitespace-nowrap">Buscar:</label>
+          <input
+            id="buscar"
+            type="text"
+            placeholder=""
+            class="border border-gray-300 rounded
+                  px-3 py-1 w-full max-w-xs
+                  focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+          <div class="text-right md:text-right flex items-center ml-5">
+            <button
+              (click)="abrirModalAgregar()"
+              class="flex items-center space-x-2 
+                    bg-[#00796B] text-white
+                    px-3 py-1 rounded
+                    hover:bg-teal-600 transition "
+            >
+              <iconify-icon
+                icon="mdi:file-document-add"
+                class="text-lg"
+              ></iconify-icon>
+              <span class="text-sm">Agregar</span>
+            </button>
+          </div>
+        </div> 
+      </div>
+
+      <!-- TABLA ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-table bg-[#00796B] overflow-hidden shadow ">
+        <div class="">
+          <div class="overflow-x-auto">
+            <table class="w-full table-fixed divide-y divide-gray-200">
+              <thead class="">
+                <tr>
+                  <th class="px-3 md:px-4 py-2 text-center text-xs font-medium text-white w-[15%]">Productos</th>
+                  <th class="px-3 md:px-4 py-2 text-center text-xs font-medium text-white w-[45%]">Descripcion</th>
+                  <th class="px-3 md:px-4 py-2 text-center text-xs font-medium text-white w-[10%]">Version</th>
+                  <th class="px-3 md:px-4 py-2 text-center text-xs font-medium text-white w-[20%]">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let Consultas of consulta">
+                  <td class="px-3 md:px-4 py-2 text-center text-xs">{{ Consultas.productos }}</td>
+                  <td class="px-3 md:px-4 py-2 text-xs break-words">
+                    <div class="max-h-24 overflow-y-auto">
+                      {{ Consultas.descripcion }}
+                    </div>
+                  </td>
+                  <td class="px-3 md:px-4 py-2 text-center text-xs">{{ Consultas.version }}</td>
+                  <td class="px-3 md:px-4 py-2 text-center text-xs">
+                    <div class="flex justify-center space-x-1">
+                      <!-- Manuales -->
+                      <button
+                        (click)="abrirModalManual(Consultas)"
+                        class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                        aria-label="Manuales"
+                      >
+                        <iconify-icon
+                          icon="mdi:book-plus-multiple"
+                          class="text-2xl text-orange-500"
+                        ></iconify-icon>
+                      </button>
+                      <!-- Edit -->
+                      <button
+                        (click)="abrirModalEditar(Consultas)"
+                        class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                        aria-label="Editar"
+                      >
+                        <iconify-icon
+                          icon="mdi:square-edit-outline"
+                          class="text-2xl text-teal-600"
+                        ></iconify-icon>
+                      </button>
+                      <!-- Delete -->
+                      <button
+                        (click)="abrirModalEliminar(Consultas.id)"
+                        class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                        aria-label="Eliminar"
+                      >
+                        <iconify-icon
+                          icon="mdi:delete-outline"
+                          class="text-2xl text-red-600"
+                        ></iconify-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERSIÓN MÓVIL OPTIMIZADA -->
+      <div class="mobile-version">
+        <!-- Mobile Header -->
+        <div class="mobile-header mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-bold text-gray-900">Productos</h1>
+            <button
+              (click)="abrirModalAgregar()"
+              class="flex items-center bg-teal-500 text-white px-3 py-2 rounded-lg font-medium text-sm hover:bg-teal-600 transition shadow-md"
+            >
+              <iconify-icon icon="mdi:file-document-add" class="mr-1 text-lg"></iconify-icon>
+              <span>Nuevo</span>
+            </button>
+          </div>
+          
+          <!-- Mobile Search -->
+          <div class="mb-4">
+            <div class="relative">
+              <input
+                type="text"
+                class="w-full border-2 border-teal-200 rounded-lg px-4 py-3 pl-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
+                placeholder="Buscar productos..."
+              />
+              <iconify-icon 
+                icon="mdi:magnify" 
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-400 text-lg">
+              </iconify-icon>
+            </div>
+          </div>
+
+          <!-- Mobile Stats -->
+          <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <iconify-icon icon="mdi:package-variant" class="text-teal-500 text-xl mr-3"></iconify-icon>
+                <span class="text-gray-700 font-medium">Total de productos</span>
+              </div>
+              <span class="text-2xl font-bold text-gray-900">{{ consulta.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards space-y-4">
+          <div *ngFor="let Consultas of consulta" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Card Header -->
+            <div class="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="bg-white bg-opacity-20 rounded-full p-2 mr-3">
+                    <iconify-icon icon="mdi:package-variant" class="text-white text-lg"></iconify-icon>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold text-sm">{{ Consultas.productos }}</h3>
+                    <p class="text-teal-100 text-xs">Versión {{ Consultas.version }}</p>
+                  </div>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-full px-2 py-1">
+                  <iconify-icon icon="mdi:tag" class="text-white text-sm"></iconify-icon>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-4">
+              <!-- Descripción -->
+              <div class="mb-4">
+                <div class="flex items-start">
+                  <iconify-icon icon="mdi:text-box-outline" class="text-gray-400 text-lg mr-2 mt-0.5 flex-shrink-0"></iconify-icon>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 mb-1">Descripción</p>
+                    <div class="text-sm text-gray-900 leading-relaxed max-h-32 overflow-y-auto">
+                      {{ Consultas.descripcion }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información adicional -->
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <!-- Versión -->
+                <div class="flex items-center">
+                  <iconify-icon icon="mdi:source-branch" class="text-gray-400 text-lg mr-2"></iconify-icon>
+                  <div>
+                    <p class="text-xs text-gray-500">Versión</p>
+                    <p class="text-sm font-medium text-gray-900">{{ Consultas.version }}</p>
+                  </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="flex items-center">
+                  <iconify-icon icon="mdi:check-circle" class="text-gray-400 text-lg mr-2"></iconify-icon>
+                  <div>
+                    <p class="text-xs text-gray-500">Estado</p>
+                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                      Activo
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100">
+                <!-- Manuales -->
+                <button
+                  (click)="abrirModalManual(Consultas)"
+                  class="flex items-center justify-center bg-orange-50 hover:bg-orange-100 text-orange-700 px-3 py-2 rounded-lg transition-colors border border-orange-200"
+                >
+                  <iconify-icon icon="mdi:book-plus-multiple" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-xs font-medium">Manuales</span>
+                </button>
+
+                <!-- Editar -->
+                <button
+                  (click)="abrirModalEditar(Consultas)"
+                  class="flex items-center justify-center bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-2 rounded-lg transition-colors border border-teal-200"
+                >
+                  <iconify-icon icon="mdi:square-edit-outline" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-xs font-medium">Editar</span>
+                </button>
+
+                <!-- Eliminar -->
+                <button
+                  (click)="abrirModalEliminar(Consultas.id)"
+                  class="flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg transition-colors border border-red-200"
+                >
+                  <iconify-icon icon="mdi:delete-outline" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-xs font-medium">Eliminar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for Mobile -->
+          <div *ngIf="consulta.length === 0" class="text-center py-12">
+            <iconify-icon icon="mdi:package-variant-closed" class="text-gray-300 text-6xl mb-4"></iconify-icon>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No hay productos</h3>
+            <p class="text-gray-500 mb-4">Comienza agregando tu primer producto</p>
+            <button
+              (click)="abrirModalAgregar()"
+              class="inline-flex items-center bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition"
+            >
+              <iconify-icon icon="mdi:file-document-add" class="text-lg mr-2"></iconify-icon>
+              Nuevo Producto
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar producto -->
+<app-agregar-productos-modal 
+  *ngIf="mostrarModalAgregar"
+  (cerrarModal)="cerrarModalAgregar()"
+  (guardarProducto)="onGuardarProducto($event)">
+</app-agregar-productos-modal>
+
+<!-- Modal Editar Producto -->
+<app-editar-productos-modal
+   *ngIf="mostrarModalEditar"
+    [Consultas]="productoSeleccionado"
+    (cerrarModal)="cerrarModalEditar()"
+    (actualizarProducto)="actualizarProducto($event)">
+ </app-editar-productos-modal>
+
+<app-eliminar-administradores-modal 
+  *ngIf="mostrarModalEliminar"
+  [adminsId]="consultaIdAEliminar"
+  (cancelar)="cerrarModalEliminar()">
+</app-eliminar-administradores-modal>
+
+<!-- Modal Manual Producto -->
+<app-manual-productos-modal
+  *ngIf="mostrarModalManual"
+  [Consultas]="productoSeleccionado"
+  (cerrarModal)="cerrarModalManual()"
+  (guardarDocumento)="guardarDocumento($event)">
+</app-manual-productos-modal>

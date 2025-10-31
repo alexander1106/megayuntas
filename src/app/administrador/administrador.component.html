@@ -1,0 +1,16 @@
+<!-- Contenedor general sin scroll horizontal -->
+<div class="overflow-x-hidden h-screen flex flex-col">
+  <!-- Toolbar -->
+  <app-toolbar class="flex-shrink-0 w-full"></app-toolbar>
+  
+  <!-- Layout principal: sidebar + contenido -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar fijo (no superpuesto) - Solo desktop -->
+    <app-sidebar class="hidden md:block flex-shrink-0"></app-sidebar>
+    
+    <!-- Contenido principal desplazado -->
+    <main class="flex-1 overflow-y-auto overflow-x-hidden w-full min-h-0">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

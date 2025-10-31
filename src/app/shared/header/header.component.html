@@ -1,0 +1,87 @@
+<div class="w-full bg-white border-b px-2 py-2">
+  <!-- Contenedor general -->
+  <div class="flex items-center justify-between md:justify-start gap-4">
+    <!-- Logo -->
+    <div class="flex-shrink-0">
+      <a [routerLink]="['/inicio']" class="flex-shrink-0 cursor-pointer">
+        <img
+          src="../../../assets/Logo_Megayuntas2.png"
+          class="h-12 w-28 md:h-10 md:w-20 lg:h-16 lg:w-40 object-contain"
+          alt="Logo"
+        />
+      </a>
+
+    </div>
+
+    <!-- Botón hamburguesa (solo móvil) -->
+    <button class="md:hidden text-[#E8866B] focus:outline-none" (click)="toggleMenu()">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+
+        <!-- Menú para pantallas grandes -->
+    <div class="hidden md:flex flex-1 justify-center">
+      <ul class="flex text-[#E8866B] text-sm md:text-xl gap-8 lg:gap-12 font-semibold items-end">
+        <li routerLink="/inicio" class="cursor-pointer">
+          <div routerLinkActive="text-[#007F6D] border-b-2 border-[#007F6D]"
+              class="pb-1 hover:text-[#007F6D] hover:border-b-2 hover:border-[#007F6D]">
+            <a>Inicio</a>
+          </div>
+        </li>
+        <li routerLink="/nosotros" class="cursor-pointer">
+          <div routerLinkActive="text-[#007F6D] border-b-2 border-[#007F6D]"
+              class="pb-1 hover:text-[#007F6D] hover:border-b-2 hover:border-[#007F6D]">
+            <a>Nosotros</a>
+          </div>
+        </li>
+        <li routerLink="/productos" class="cursor-pointer">
+          <div routerLinkActive="text-[#007F6D] border-b-2 border-[#007F6D]"
+              class="pb-1 hover:text-[#007F6D] hover:border-b-2 hover:border-[#007F6D]">
+            <a>Productos</a>
+          </div>
+        </li>
+        <li routerLink="/consultas" class="cursor-pointer">
+          <div routerLinkActive="text-[#007F6D] border-b-2 border-[#007F6D]"
+              class="pb-1 hover:text-[#007F6D] hover:border-b-2 hover:border-[#007F6D]">
+            <a>Consultas</a>
+          </div>
+        </li>
+        <li routerLink="/clientes" class="cursor-pointer">
+          <div routerLinkActive="text-[#007F6D] border-b-2 border-[#007F6D]"
+              class="pb-1 hover:text-[#007F6D] hover:border-b-2 hover:border-[#007F6D]">
+            <a>Clientes</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+    <!-- Iniciar sesión (pantalla grande) -->
+    <a routerLink="/login" class="hidden md:flex cursor-pointer items-center gap-2 hover:text-[#007F6D] text-sm md:text-xl text-[#E8866B] font-semibold">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="6" r="4" fill="#E8866B"/>
+        <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" fill="#E8866B"/>
+      </svg>
+      <span>Iniciar Sesión</span>
+    </a>
+  </div>
+
+  <!-- Menú móvil desplegable -->
+  <div *ngIf="menuAbierto" class="md:hidden mt-2">
+    <ul class="flex flex-col text-[#E8866B] text-base font-semibold gap-2">
+      <li><a routerLink="/inicio" class="block px-4 py-2 hover:text-[#007F6D]">Inicio</a></li>
+      <li><a routerLink="/nosotros" class="block px-4 py-2 hover:text-[#007F6D]">Nosotros</a></li>
+      <li><a routerLink="/productos" class="block px-4 py-2 hover:text-[#007F6D]">Productos</a></li>
+      <li><a routerLink="/consultas" class="block px-4 py-2 hover:text-[#007F6D]">Consultas</a></li>
+      <li><a routerLink="/clientes" class="block px-4 py-2 hover:text-[#007F6D]">Clientes</a></li>
+      <li><a routerLink="/login" class="block px-4 py-2 hover:text-[#007F6D] flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="6" r="4" fill="#E8866B"/>
+          <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" fill="#E8866B"/>
+        </svg>
+        Iniciar Sesión</a>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,328 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-gray-200 rounded-lg p-4 md:p-6 w-full max-w-7xl max-h-[95vh] overflow-y-auto">
+    <!-- Header -->
+    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 border-b border-gray-300">Nuevo Producto</h2>
+    
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+      <!-- Left Column - Image Upload Sections -->
+      <div class="flex flex-col space-y-4 md:space-y-6">
+        <!-- Primera fila: Imagen de la Caja e Imagen de la Portada -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Imagen de la Caja -->
+          <div class="border-2 border-dashed border-gray-400 rounded-lg p-3 md:p-4 text-center h-40 md:h-48">
+            <div *ngIf="!imagenCaja; else imagenCajaPreview" class="h-full flex flex-col justify-center">
+              <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 md:mb-3">
+                <iconify-icon
+                  icon="mdi:plus"
+                  class="text-white text-lg md:text-xl">
+                </iconify-icon>
+              </div>
+              <p class="text-gray-600 mb-2 md:mb-3 text-xs md:text-sm">Agrega la Imagen de<br>la caja</p>
+              <button 
+                type="button"
+                (click)="triggerFileInput('caja')"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg font-medium flex items-center gap-1 md:gap-2 mx-auto text-xs md:text-sm">
+                <iconify-icon
+                  icon="mdi:plus"
+                  class="text-xs md:text-sm">
+                </iconify-icon>
+                Agregar
+              </button>
+            </div>
+            <ng-template #imagenCajaPreview>
+              <div class="relative h-full flex flex-col">
+                <div class="flex-1 flex items-center justify-center mb-2 md:mb-3 cursor-pointer" (click)="verImagenCompleta(imagenCaja!.url)">
+                  <img [src]="imagenCaja?.url" alt="Imagen de la caja" class="max-w-full max-h-24 md:max-h-32 object-contain rounded-lg hover:opacity-80 transition-opacity">
+                </div>
+                <button 
+                  type="button"
+                  (click)="removeImage('caja')"
+                  class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                  <iconify-icon
+                    icon="mdi:close"
+                    class="text-xs">
+                  </iconify-icon>
+                </button>
+                <button 
+                  type="button"
+                  (click)="triggerFileInput('caja')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg font-medium flex items-center gap-1 md:gap-2 mx-auto text-xs md:text-sm">
+                  <iconify-icon
+                    icon="mdi:image-edit"
+                    class="text-xs md:text-sm">
+                  </iconify-icon>
+                  Cambiar
+                </button>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Imagen de la Portada -->
+          <div class="border-2 border-dashed border-gray-400 rounded-lg p-3 md:p-4 text-center h-40 md:h-48">
+            <div *ngIf="!imagenPortada; else imagenPortadaPreview" class="h-full flex flex-col justify-center">
+              <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 md:mb-3">
+                <iconify-icon
+                  icon="mdi:plus"
+                  class="text-white text-lg md:text-xl">
+                </iconify-icon>
+              </div>
+              <p class="text-gray-600 mb-2 md:mb-3 text-xs md:text-sm">Agrega la Imagen de<br>la Portada</p>
+              <button 
+                type="button"
+                (click)="triggerFileInput('portada')"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg font-medium flex items-center gap-1 md:gap-2 mx-auto text-xs md:text-sm">
+                <iconify-icon
+                  icon="mdi:plus"
+                  class="text-xs md:text-sm">
+                </iconify-icon>
+                Agregar
+              </button>
+            </div>
+            <ng-template #imagenPortadaPreview>
+              <div class="relative h-full flex flex-col">
+                <div class="flex-1 flex items-center justify-center mb-2 md:mb-3 cursor-pointer" (click)="verImagenCompleta(imagenPortada!.url)">
+                  <img [src]="imagenPortada?.url" alt="Imagen de la portada" class="max-w-full max-h-24 md:max-h-32 object-contain rounded-lg hover:opacity-80 transition-opacity">
+                </div>
+                <button 
+                  type="button"
+                  (click)="removeImage('portada')"
+                  class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                  <iconify-icon
+                    icon="mdi:close"
+                    class="text-xs">
+                  </iconify-icon>
+                </button>
+                <button 
+                  type="button"
+                  (click)="triggerFileInput('portada')"
+                  class="bg-orange-400 hover:bg-orange-500 text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg font-medium flex items-center gap-1 md:gap-2 mx-auto text-xs md:text-sm">
+                  <iconify-icon
+                    icon="mdi:image-edit"
+                    class="text-xs md:text-sm">
+                  </iconify-icon>
+                  Cambiar
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Segunda fila: Fotos Adicionales -->
+        <div class="border-2 border-dashed border-gray-400 rounded-lg p-4 md:p-6 flex-1 flex flex-col min-h-[300px]">
+          <p class="text-sm text-gray-600 mb-4">
+            <iconify-icon
+              icon="mdi:image-multiple"
+              class="text-lg mr-2">
+            </iconify-icon>
+            Fotos - {{ getFotosCount() }} - Puedes agregar un máximo de 10 fotos.
+          </p>
+          
+          <div *ngIf="fotosAdicionales.length === 0; else fotosAdicionalesPreview" class="flex-1 flex flex-col justify-center text-center">
+            <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
+              <iconify-icon
+                icon="mdi:plus"
+                class="text-white text-2xl">
+              </iconify-icon>
+            </div>
+            <p class="text-gray-600 mb-4">
+              <iconify-icon
+                icon="mdi:drag"
+                class="text-lg mr-2">
+              </iconify-icon>
+              Agrega fotos o<br>arrastra y suelta
+            </p>
+            <button 
+              type="button"
+              (click)="triggerFileInput('fotos')"
+              class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 mx-auto">
+              <iconify-icon
+                icon="mdi:plus"
+                class="text-lg">
+              </iconify-icon>
+              Agregar
+            </button>
+          </div>
+
+          <ng-template #fotosAdicionalesPreview>
+            <div class="flex-1 flex flex-col">
+              <div class="grid grid-cols-3 gap-3 md:gap-4 mb-4 overflow-y-auto flex-1 p-2">
+                <div *ngFor="let foto of fotosAdicionales; let i = index" class="relative">
+                  <img 
+                    [src]="foto.url" 
+                    alt="Foto adicional" 
+                    class="w-full h-16 md:h-20 object-contain rounded-lg bg-gray-100 cursor-pointer hover:opacity-80 transition-opacity"
+                    (click)="verImagenCompleta(foto.url)">
+                  <button 
+                    type="button"
+                    (click)="removeFotoAdicional(i)"
+                    class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-xs hover:bg-red-600 shadow-lg">
+                    <iconify-icon
+                      icon="mdi:close"
+                      class="text-xs">
+                    </iconify-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="text-center" *ngIf="fotosAdicionales.length < 10">
+                <button 
+                  type="button"
+                  (click)="triggerFileInput('fotos')"
+                  class="bg-orange-400 hover:bg-orange-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium flex items-center gap-2 mx-auto text-sm">
+                  <iconify-icon
+                    icon="mdi:plus"
+                    class="text-lg">
+                  </iconify-icon>
+                  Agregar más ({{ getFotosCount() }})
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Right Column - Form Fields -->
+      <div class="flex flex-col space-y-3">
+        <!-- Producto -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <iconify-icon
+              icon="mdi:package-variant"
+              class="text-lg">
+            </iconify-icon>
+            Producto :
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.producto"
+            class="w-full px-3 md:px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base">
+        </div>
+
+        <!-- Descripción -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <iconify-icon
+              icon="mdi:text-box"
+              class="text-lg">
+            </iconify-icon>
+            Descripción:
+          </label>
+          <textarea 
+            [(ngModel)]="formData.descripcion"
+            rows="4"
+            class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm md:text-base">
+          </textarea>
+        </div>
+
+        <!-- Versión -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <iconify-icon
+              icon="mdi:tag"
+              class="text-lg">
+            </iconify-icon>
+            Versión :
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.version"
+            class="w-full px-3 md:px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base">
+        </div>
+
+        <!-- Características con Editor Rico -->
+        <div class="flex-1 flex flex-col">
+          <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <iconify-icon
+              icon="mdi:format-list-bulleted"
+              class="text-lg">
+            </iconify-icon>
+            Características :
+          </label>
+          
+          <div class="border border-gray-300 rounded-lg bg-white overflow-hidden flex-1 min-h-[200px] max-h-[300px]">
+            <quill-editor
+              [(ngModel)]="formData.caracteristicas"
+              class="w-full h-full"
+              [styles]="{ height: '100%', border: 'none' }"
+              placeholder="Escribe las características del producto...">
+            </quill-editor>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons - Responsive -->
+    <div class="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
+      <button 
+        type="button"
+        (click)="onCancelar()"
+        class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 md:px-6 py-2 rounded-lg font-medium flex items-center justify-center gap-2 text-sm md:text-base">
+        <iconify-icon
+          icon="mdi:close"
+          class="text-lg">
+        </iconify-icon>
+        Cancelar
+      </button>
+      <button 
+        type="button"
+        (click)="onGuardar()"
+        class="w-full sm:w-auto bg-teal-500 hover:bg-teal-600 text-white px-4 md:px-6 py-2 rounded-lg font-medium flex items-center justify-center gap-2 text-sm md:text-base">
+        <iconify-icon
+          icon="mdi:content-save"
+          class="text-lg">
+        </iconify-icon>
+        Guardar
+      </button>
+    </div>
+
+    <!-- Hidden File Inputs -->
+    <input 
+      id="fileInputCaja"
+      type="file" 
+      accept="image/*" 
+      (change)="onFileSelected($event, 'caja')"
+      class="hidden">
+    
+    <input 
+      id="fileInputPortada"
+      type="file" 
+      accept="image/*" 
+      (change)="onFileSelected($event, 'portada')"
+      class="hidden">
+    
+    <input 
+      id="fileInputFotos"
+      type="file" 
+      accept="image/*" 
+      multiple
+      (change)="onFileSelected($event, 'fotos')"
+      class="hidden">
+  </div>
+</div>
+
+<!-- Modal para ver imagen completa - Mejorado -->
+<div *ngIf="mostrarImagenCompleta" class="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-[60] p-4" (click)="cerrarImagenCompleta()">
+  <div class="relative w-full h-full flex items-center justify-center">
+    <!-- Imagen que se ajusta al viewport -->
+    <img 
+      [src]="imagenCompleta" 
+      alt="Imagen completa" 
+      class="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+      (click)="$event.stopPropagation()">
+    
+    <!-- Botón de cerrar -->
+    <button 
+      type="button"
+      (click)="cerrarImagenCompleta()"
+      class="absolute top-4 right-4 bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-red-600 shadow-lg transition-colors z-10">
+      <iconify-icon
+        icon="mdi:close"
+        class="text-2xl">
+      </iconify-icon>
+    </button>
+    
+    <!-- Indicador de que se puede cerrar haciendo click fuera -->
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg text-sm">
+      Haz click fuera de la imagen para cerrar
+    </div>
+  </div>
+</div>

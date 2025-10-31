@@ -1,0 +1,122 @@
+<!-- Overlay del modal -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <!-- Modal -->
+  <div class="bg-gray-200 rounded-lg shadow-xl w-full max-w-2xl mx-4">
+    <!-- Header -->
+    <div class="bg-gray-200 px-6 py-4 rounded-t-lg border-b border-gray-300">
+      <h2 class="text-xl font-bold text-gray-800">Editar Consulta</h2>
+    </div>
+    
+    <!-- Body -->
+    <div class="p-6 space-y-4">
+      <!-- Campo Consulta -->
+      <div class="grid grid-cols-4 gap-4 items-center">
+        <label class="text-sm font-medium text-gray-700">
+          Consulta:
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="consulta"
+          class="col-span-3 px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Ingrese la consulta"
+        />
+      </div>
+
+      <!-- Campo Descripción -->
+      <div class="grid grid-cols-4 gap-4 items-start">
+        <label class="text-sm font-medium text-gray-700 pt-2">
+          Descripción:
+        </label>
+        <textarea
+          [(ngModel)]="descripcion"
+          rows="3"
+          class="col-span-3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          placeholder="Ingrese la descripción"
+        ></textarea>
+      </div>
+
+      <!-- Campo Video -->
+      <div class="grid grid-cols-4 gap-4 items-center">
+        <label class="text-sm font-medium text-gray-700">
+          Video:
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="video"
+          class="col-span-3 px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="URL del video"
+        />
+      </div>
+
+      <!-- Campo Producto -->
+      <div class="grid grid-cols-4 gap-4 items-center">
+        <label class="text-sm font-medium text-gray-700">
+          Producto:
+        </label>
+        <select
+          [(ngModel)]="productoSeleccionado"
+          class="col-span-3 px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+        >
+          <option value="">-- Seleccione --</option>
+          <option *ngFor="let producto of productos" [value]="producto.id">
+            {{ producto.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Campo Módulo -->
+      <div class="grid grid-cols-4 gap-4 items-center">
+        <label class="text-sm font-medium text-gray-700">
+          Módulo:
+        </label>
+        <select
+          [(ngModel)]="moduloSeleccionado"
+          class="col-span-3 px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+        >
+          <option value="">-- Seleccione --</option>
+          <option *ngFor="let modulo of modulos" [value]="modulo.id">
+            {{ modulo.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Toggle Mostrar -->
+      <div class="grid grid-cols-4 gap-4 items-center">
+        <label class="text-sm font-medium text-gray-700">
+          Mostrar:
+        </label>
+        <div class="col-span-3 flex justify-start">
+          <button
+            type="button"
+            (click)="toggleMostrar()"
+            [class]="mostrar ? 'bg-teal-500' : 'bg-orange-500'"
+            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+          >
+            <span
+              [class]="mostrar ? 'translate-x-6' : 'translate-x-1'"
+              class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 bg-gray-200 rounded-b-lg flex justify-end space-x-3">
+      <button
+        type="button"
+        (click)="onCancelar()"
+        class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="onGuardar()"
+        class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+      >
+        Actualizar
+      </button>
+    </div>
+  </div>
+</div>

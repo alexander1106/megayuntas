@@ -1,0 +1,178 @@
+/* Desktop: Estilos corregidos para el sidebar */
+.desktop-sidebar {
+  width: 60px;
+  height: 100%;
+  position: relative;
+}
+
+.menu-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 8px;
+  height: 50px;
+  width: 100%;
+}
+
+.unified-container {
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  box-shadow: none;
+  border: none;
+}
+
+.menu-item:hover .unified-container {
+  width: 180px; /* Ancho expandido para mostrar texto */
+}
+
+.icon-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.icon-part iconify-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.label-part {
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+  flex: 1;
+}
+
+.menu-item:hover .label-part {
+  opacity: 1;
+}
+
+.label-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Colores de fondo */
+.bg-teal-500 {
+  background-color: #14b8a6;
+}
+
+.bg-orange-500 {
+  background-color: #f97316;
+}
+
+.bg-orange-400 {
+  background-color: #fb923c;
+}
+
+/* Móvil: Estilos para navegación horizontal */
+@media (max-width: 767px) {
+  /* Ocultar desktop en móvil */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Mostrar móvil */
+  .mobile-sidebar {
+    display: block;
+  }
+
+  /* Navegación horizontal */
+  .mobile-nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .mobile-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Botones de navegación móvil */
+  .mobile-nav-button {
+    min-width: 70px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .mobile-nav-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .mobile-nav-button:active {
+    transform: translateY(0);
+  }
+
+  /* Estados activo/inactivo para móvil */
+  .mobile-nav-button.active {
+    background-color: #f97316;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-nav-button.inactive {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+
+  .mobile-nav-button.inactive:hover {
+    background-color: #e5e7eb;
+  }
+
+  /* Sombras */
+  .mobile-shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Desktop: Ocultar versión móvil */
+@media (min-width: 768px) {
+  .mobile-sidebar {
+    display: none;
+  }
+
+  .desktop-sidebar {
+    display: block;
+  }
+}
+
+/* Efectos al hacer hover */
+.iconify-icon {
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover .iconify-icon {
+  transform: scale(1.1);
+}
+
+/* Asegurar que los iconos estén centrados */
+.menu-item .unified-container .icon-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-item .unified-container .icon-part iconify-icon {
+  margin: 0;
+  padding: 0;
+}

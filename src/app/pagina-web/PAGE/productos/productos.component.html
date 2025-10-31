@@ -1,0 +1,54 @@
+<div class="w-full h-full flex items-center justify-center py-10 relative">
+  <!-- Botones de navegación solo en pantallas grandes -->
+  <button (click)="prevSlide()"
+    class="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white text-gray-700 shadow-xl border border-gray-300 rounded-full hover:bg-[#007F6D] hover:scale-110 transition-all duration-300 ease-in-out z-10">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <button (click)="nextSlide()"
+    class="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white text-gray-700 shadow-xl border border-gray-300 rounded-full hover:bg-[#007F6D] hover:scale-110 transition-all duration-300 ease-in-out z-10">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <!-- Carrusel de productos con scroll horizontal en móviles -->
+  <div class="overflow-hidden w-[90%] max-w-6xl">
+    <div #carousel
+      class="flex md:flex-row flex-col md:transition-transform md:duration-500 md:ease-in-out overflow-x-auto scroll-smooth touch-pan-x snap-x snap-mandatory">
+      <div
+        class="min-w-full md:min-w-full grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 p-6 justify-items-center items-center"
+        *ngFor="let bloque of productosPorBloque">
+
+        <div *ngFor="let producto of bloque"
+          class="flex items-start gap-4 border-b pb-4 w-full max-w-md snap-start">
+          <img [src]="'assets/producto_img/' + producto.imagen" [alt]="producto.nombre"
+            class="w-28 object-contain" />
+          <div>
+            <a href="#" class="text-blue-600 font-bold text-sm hover:underline">
+              {{ producto.nombre }}
+            </a>
+            <p *ngIf="producto.subtitulo" class="font-semibold text-sm text-black">
+              {{ producto.subtitulo }}
+            </p>
+            <p class="text-xs text-gray-600 mt-1 text-justify">
+              {{ producto.descripcion.slice(0, 120) }}{{ producto.descripcion.length > 120 ? '...' : '' }}
+            </p>
+            <button [routerLink]="['/vistaproducto', producto.id]"
+              class="mt-2 bg-pink-100 text-green-700 px-2 py-1 rounded-full text-xs hover:bg-pink-200 transition">
+              Ver detalles ...
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mensaje si no hay productos -->
+<p *ngIf="productos.length === 0" class="text-gray-500 text-center mt-4">
+  No hay productos disponibles en este momento.
+</p>

@@ -1,0 +1,464 @@
+<div class="bg-gray-100 w-full min-h-screen flex flex-col">
+  <div class="flex-1 w-full mt-2 p-1 md:p-2">
+    <div class="max-w-screen mx-5">
+      
+      <!-- HEADER ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-header grid grid-cols-5 gap-4 mb-3">
+        <h1 class="text-2xl md:text-2xl font-bold text-gray-900">
+          Consultas
+        </h1>
+
+        <div class="flex-col flex md:flex-row items-right col-start-3 col-span-3 justify-end">
+          <!-- DERECHA: buscador -->
+          <div class="col-span-3 col-start-2 flex items-right justify-end pr-4">
+            <label for="buscar" class="text-sm flex items-center font-medium mr-2 whitespace-nowrap">Buscar:</label>
+            <input
+              id="buscar"
+              type="text"
+              placeholder=""
+              class="border border-gray-300 rounded
+                    px-3 py-1 w-full max-w-xs
+                    focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div> 
+
+          <button
+            (click)="abrirModalAgregar()"
+            class="flex items-center space-x-2  
+                  bg-teal-500 text-white
+                  px-3 py-1 rounded
+                  hover:bg-teal-600 transition"
+          >
+            <iconify-icon
+              icon="mdi:file-document-add"
+              class="text-sm"
+            ></iconify-icon>
+            <span class="text-sm">Agregar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLA ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-table grid grid-cols-5 gap-1">
+        <div class="bg-white shadow rounded-lg overflow-hidden col-span-4">
+          <div class="overflow-x-auto">
+            <table class="w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-gray-500">Consultas</th>
+                  <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-gray-500">Productos</th>
+                  <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-gray-500">Modulos</th>
+                  <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-gray-500">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let Consultas of consulta">
+                  <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ Consultas.consulta }}</td>
+                  <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ Consultas.productos }}</td>
+                  <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ Consultas.modulos }}</td>
+                  <td class="px-3 md:px-6 whitespace-nowrap text-center text-xs">
+                    <!-- pdf-box -->
+                    <button
+                      (click)="exportarPDF(Consultas.id)"
+                      class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                      aria-label="pdf-box"
+                    >
+                      <iconify-icon
+                        icon="mdi:file-pdf-box"
+                        class="text-2xl text-orange-500"
+                      ></iconify-icon>
+                    </button>
+
+                    <!-- list-box -->
+                    <button
+                      (click)="editarPasos(Consultas.id)"
+                      class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                      aria-label="list-box"
+                    >
+                      <iconify-icon
+                        icon="mdi:list-box"
+                        class="text-2xl text-purple-500"
+                      ></iconify-icon>
+                    </button>
+
+                    <!-- search-outline -->
+                    <button
+                      (click)="relacionarConsultas(Consultas.id)"
+                      class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                      aria-label="search-outline"
+                    >
+                      <iconify-icon
+                        icon="mdi:text-box-search-outline"
+                        class="text-2xl text-cyan-500"
+                      ></iconify-icon>
+                    </button>
+
+                    <!-- Edit -->
+                    <button
+                      (click)="abrirModalEditar(Consultas.id)"
+                      class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                      aria-label="Editar"
+                    >
+                      <iconify-icon
+                        icon="mdi:square-edit-outline"
+                        class="text-2xl text-teal-600"
+                      ></iconify-icon>
+                    </button>
+
+                    <!-- Delete -->
+                    <button
+                      (click)="abrirModalEliminar(Consultas.id)"
+                      class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
+                      aria-label="Eliminar"
+                    >
+                      <iconify-icon
+                        icon="mdi:delete-outline"
+                        class="text-2xl text-red-600"
+                      ></iconify-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full divide-y divide-gray-200">
+              <thead class="bg-[#F28C7F]">
+                <tr>
+                  <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Leyenda</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white flex-col md:flex-row">
+                <td class="py-1 text-sm flex items-center"><iconify-icon icon="mdi:file-pdf-box" class="text-2xl text-orange-500 px-2"></iconify-icon>Exportar a PDF una consulta</td>
+                <td class="py-1 text-sm flex items-center"><iconify-icon icon="mdi:list-box" class="text-2xl text-purple-500 px-2"></iconify-icon>Crear o editar pasos de una consulta</td>
+                <td class="py-1 text-sm flex items-center"><iconify-icon icon="mdi:text-box-search-outline" class="text-2xl text-cyan-500 px-2"></iconify-icon>Relacionar consultas a una consulta</td>
+                <td class="py-1 text-sm flex items-center"><iconify-icon icon="mdi:square-edit-outline" class="text-2xl text-teal-600 px-2"></iconify-icon>Editar una consulta</td>
+                <td class="py-1 text-sm flex items-center"><iconify-icon icon="mdi:delete-outline" class="text-2xl text-red-600 px-2"></iconify-icon>Eliminar una consulta</td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERSIÓN MÓVIL OPTIMIZADA -->
+      <div class="mobile-version">
+        <!-- Mobile Header -->
+        <div class="mobile-header mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-bold text-gray-900">Consultas</h1>
+            <button
+              (click)="abrirModalAgregar()"
+              class="flex items-center bg-teal-500 text-white px-3 py-2 rounded-lg font-medium text-sm hover:bg-teal-600 transition shadow-md"
+            >
+              <iconify-icon icon="mdi:file-document-add" class="mr-1 text-lg"></iconify-icon>
+              <span>Nueva</span>
+            </button>
+          </div>
+          
+          <!-- Mobile Search -->
+          <div class="mb-4">
+            <div class="relative">
+              <input
+                type="text"
+                class="w-full border-2 border-teal-200 rounded-lg px-4 py-3 pl-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
+                placeholder="Buscar consultas..."
+              />
+              <iconify-icon 
+                icon="mdi:magnify" 
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-400 text-lg">
+              </iconify-icon>
+            </div>
+          </div>
+
+          <!-- Mobile Stats -->
+          <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <iconify-icon icon="mdi:help-circle" class="text-teal-500 text-xl mr-3"></iconify-icon>
+                <span class="text-gray-700 font-medium">Total de consultas</span>
+              </div>
+              <span class="text-2xl font-bold text-gray-900">{{ consulta.length }}</span>
+            </div>
+          </div>
+
+          <!-- Mobile Legend -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-4 overflow-hidden">
+            <div class="bg-[#F28C7F] px-4 py-2">
+              <h3 class="text-white font-medium text-sm flex items-center">
+                <iconify-icon icon="mdi:information" class="mr-2"></iconify-icon>
+                Leyenda de Acciones
+              </h3>
+            </div>
+            <div class="p-3 space-y-2">
+              <div class="flex items-center text-xs">
+                <iconify-icon icon="mdi:file-pdf-box" class="text-orange-500 text-lg mr-2"></iconify-icon>
+                <span>Exportar a PDF una consulta</span>
+              </div>
+              <div class="flex items-center text-xs">
+                <iconify-icon icon="mdi:list-box" class="text-purple-500 text-lg mr-2"></iconify-icon>
+                <span>Crear o editar pasos de una consulta</span>
+              </div>
+              <div class="flex items-center text-xs">
+                <iconify-icon icon="mdi:text-box-search-outline" class="text-cyan-500 text-lg mr-2"></iconify-icon>
+                <span>Relacionar consultas a una consulta</span>
+              </div>
+              <div class="flex items-center text-xs">
+                <iconify-icon icon="mdi:square-edit-outline" class="text-teal-600 text-lg mr-2"></iconify-icon>
+                <span>Editar una consulta</span>
+              </div>
+              <div class="flex items-center text-xs">
+                <iconify-icon icon="mdi:delete-outline" class="text-red-600 text-lg mr-2"></iconify-icon>
+                <span>Eliminar una consulta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards space-y-4">
+          <div *ngFor="let Consultas of consultasPaginadas" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Card Header -->
+            <div class="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="bg-white bg-opacity-20 rounded-full p-2 mr-3">
+                    <iconify-icon icon="mdi:help-circle" class="text-white text-lg"></iconify-icon>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-white font-semibold text-sm leading-tight">{{ Consultas.consulta }}</h3>
+                    <p class="text-teal-100 text-xs">ID: {{ Consultas.id }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-4">
+              <!-- Información principal -->
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <!-- Producto -->
+                <div class="flex items-start">
+                  <iconify-icon icon="mdi:package-variant" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                  <div>
+                    <p class="text-xs text-gray-500">Producto</p>
+                    <p class="text-sm font-medium text-gray-900">{{ Consultas.productos }}</p>
+                  </div>
+                </div>
+
+                <!-- Módulo -->
+                <div class="flex items-start">
+                  <iconify-icon icon="mdi:view-module" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                  <div>
+                    <p class="text-xs text-gray-500">Módulo</p>
+                    <p class="text-sm font-medium text-gray-900">{{ Consultas.modulos }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Descripción si existe -->
+              <div *ngIf="Consultas.descripcion" class="mb-4">
+                <div class="flex items-start">
+                  <iconify-icon icon="mdi:text-box-outline" class="text-gray-400 text-lg mr-2 mt-0.5 flex-shrink-0"></iconify-icon>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 mb-1">Descripción</p>
+                    <p class="text-sm text-gray-700 leading-relaxed">{{ Consultas.descripcion }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estado -->
+              <div class="mb-4">
+                <div class="flex items-center">
+                  <iconify-icon icon="mdi:eye" class="text-gray-400 text-lg mr-2"></iconify-icon>
+                  <div>
+                    <p class="text-xs text-gray-500">Estado</p>
+                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                          [class]="Consultas.mostrar ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                      {{ Consultas.mostrar ? 'Visible' : 'Oculto' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="grid grid-cols-5 gap-2 pt-3 border-t border-gray-100">
+                <!-- PDF -->
+                <button
+                  (click)="exportarPDF(Consultas.id)"
+                  class="flex flex-col items-center justify-center bg-orange-50 hover:bg-orange-100 text-orange-700 p-2 rounded-lg transition-colors border border-orange-200"
+                >
+                  <iconify-icon icon="mdi:file-pdf-box" class="text-lg mb-1"></iconify-icon>
+                  <span class="text-xs font-medium">PDF</span>
+                </button>
+
+                <!-- Pasos -->
+                <button
+                  (click)="editarPasos(Consultas.id)"
+                  class="flex flex-col items-center justify-center bg-purple-50 hover:bg-purple-100 text-purple-700 p-2 rounded-lg transition-colors border border-purple-200"
+                >
+                  <iconify-icon icon="mdi:list-box" class="text-lg mb-1"></iconify-icon>
+                  <span class="text-xs font-medium">Pasos</span>
+                </button>
+
+                <!-- Relacionar -->
+                <button
+                  (click)="relacionarConsultas(Consultas.id)"
+                  class="flex flex-col items-center justify-center bg-cyan-50 hover:bg-cyan-100 text-cyan-700 p-2 rounded-lg transition-colors border border-cyan-200"
+                >
+                  <iconify-icon icon="mdi:text-box-search-outline" class="text-lg mb-1"></iconify-icon>
+                  <span class="text-xs font-medium">Relacionar</span>
+                </button>
+
+                <!-- Editar -->
+                <button
+                  (click)="abrirModalEditar(Consultas.id)"
+                  class="flex flex-col items-center justify-center bg-teal-50 hover:bg-teal-100 text-teal-700 p-2 rounded-lg transition-colors border border-teal-200"
+                >
+                  <iconify-icon icon="mdi:square-edit-outline" class="text-lg mb-1"></iconify-icon>
+                  <span class="text-xs font-medium">Editar</span>
+                </button>
+
+                <!-- Eliminar -->
+                <button
+                  (click)="abrirModalEliminar(Consultas.id)"
+                  class="flex flex-col items-center justify-center bg-red-50 hover:bg-red-100 text-red-700 p-2 rounded-lg transition-colors border border-red-200"
+                >
+                  <iconify-icon icon="mdi:delete-outline" class="text-lg mb-1"></iconify-icon>
+                  <span class="text-xs font-medium">Eliminar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Pagination -->
+          <div class="mobile-pagination mt-6 mb-4" *ngIf="totalPaginas > 1">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <!-- Info de paginación -->
+              <div class="flex items-center justify-between mb-4">
+                <div class="text-sm text-gray-600">
+                  Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+                  {{ Math.min(paginaActual * itemsPorPagina, consulta.length) }} 
+                  de {{ consulta.length }} consultas
+                </div>
+                <div class="text-sm font-medium text-gray-900">
+                  Página {{ paginaActual }} de {{ totalPaginas }}
+                </div>
+              </div>
+
+              <!-- Controles de navegación -->
+              <div class="flex items-center justify-between">
+                <!-- Botón Anterior -->
+                <button
+                  (click)="paginaAnterior()"
+                  [disabled]="paginaActual === 1"
+                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  [class]="paginaActual === 1 ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : 'text-teal-700 bg-teal-50 hover:bg-teal-100'"
+                >
+                  <iconify-icon icon="mdi:chevron-left" class="mr-1"></iconify-icon>
+                  Anterior
+                </button>
+
+                <!-- Números de página -->
+                <div class="flex items-center space-x-1">
+                  <button
+                    *ngFor="let pagina of numerosPaginas"
+                    (click)="irAPagina(pagina)"
+                    class="w-8 h-8 text-sm font-medium rounded-lg transition-colors"
+                    [class]="pagina === paginaActual ? 'bg-teal-500 text-white' : 'text-gray-700 bg-gray-100 hover:bg-gray-200'"
+                  >
+                    {{ pagina }}
+                  </button>
+                </div>
+
+                <!-- Botón Siguiente -->
+                <button
+                  (click)="paginaSiguiente()"
+                  [disabled]="paginaActual === totalPaginas"
+                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  [class]="paginaActual === totalPaginas ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : 'text-teal-700 bg-teal-50 hover:bg-teal-100'"
+                >
+                  Siguiente
+                  <iconify-icon icon="mdi:chevron-right" class="ml-1"></iconify-icon>
+                </button>
+              </div>
+
+              <!-- Navegación rápida (solo si hay muchas páginas) -->
+              <div class="mt-4 pt-4 border-t border-gray-100" *ngIf="totalPaginas > 10">
+                <div class="flex items-center justify-center space-x-2">
+                  <button
+                    (click)="irAPagina(1)"
+                    [disabled]="paginaActual === 1"
+                    class="px-2 py-1 text-xs font-medium rounded transition-colors"
+                    [class]="paginaActual === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-teal-600 hover:bg-teal-50'"
+                  >
+                    Primera
+                  </button>
+                  
+                  <span class="text-gray-400">|</span>
+                  
+                  <button
+                    (click)="irAPagina(totalPaginas)"
+                    [disabled]="paginaActual === totalPaginas"
+                    class="px-2 py-1 text-xs font-medium rounded transition-colors"
+                    [class]="paginaActual === totalPaginas ? 'text-gray-400 cursor-not-allowed' : 'text-teal-600 hover:bg-teal-50'"
+                  >
+                    Última
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for Mobile -->
+          <div *ngIf="consulta.length === 0" class="text-center py-12">
+            <iconify-icon icon="mdi:help-circle-outline" class="text-gray-300 text-6xl mb-4"></iconify-icon>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No hay consultas</h3>
+            <p class="text-gray-500 mb-4">Comienza agregando tu primera consulta</p>
+            <button
+              (click)="abrirModalAgregar()"
+              class="inline-flex items-center bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition"
+            >
+              <iconify-icon icon="mdi:file-document-add" class="text-lg mr-2"></iconify-icon>
+              Nueva Consulta
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar consulta -->
+<app-agregar-consultas 
+  *ngIf="mostrarModalAgregar"
+  (cerrar)="cerrarModalAgregar()"
+  (consultaGuardada)="onConsultaGuardada($event)"
+></app-agregar-consultas>
+
+<!-- Modal para editar consulta -->
+<app-editar-consultas 
+  *ngIf="mostrarModalEditar"
+  [consultaId]="consultaIdAEditar"
+  (cerrar)="cerrarModalEditar()"
+  (consultaEditada)="onConsultaEditada($event)"
+></app-editar-consultas>
+
+<!-- Modal para eliminar consulta -->
+<app-eliminar-consultas 
+  *ngIf="mostrarModalEliminar"
+  [consultaId]="consultaIdAEliminar"
+  (cancelar)="cerrarModalEliminar()"
+  (confirmar)="consultaIdAEliminar !== null && eliminarConsulta(consultaIdAEliminar)"
+></app-eliminar-consultas>
+
+<!-- Modal para relacionar consultas -->
+<app-relacionar-consultas 
+  *ngIf="mostrarModalRelacionar"
+  [consultaId]="consultaIdARelacionar"
+  (cerrar)="cerrarModalRelacionar()"
+  (consultasRelacionadas)="onConsultasRelacionadas($event)"
+></app-relacionar-consultas>

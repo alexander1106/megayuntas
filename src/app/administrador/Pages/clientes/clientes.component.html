@@ -1,0 +1,276 @@
+<!-- src/app/components/clientes/clientes.component.html -->
+<div class="bg-gray-100 w-full min-h-screen flex flex-col">
+  <div class="flex-1 w-full mt-2 p-1 md:p-2">
+    <div class="max-w-screen mx-5">
+      
+      <!-- HEADER ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-header grid grid-cols-2 bg-[#00796B] gap-4 px-2 py-1">
+        <h1 class="text-2xl font-bold text-white">Clientes</h1>
+        <div class="flex items-center justify-end space-x-4">
+          <label for="buscar" class="text-sm text-white font-medium">Buscar:</label>
+          <input
+            id="buscar"
+            type="text"
+            class="border border-gray-300 rounded px-3 py-1 max-w-xs focus:ring-2 focus:ring-teal-500"
+          />
+          <button (click)="descargarReporte()"           
+           class="flex items-center bg-[#00796B] text-white px-3 py-1 rounded hover:bg-teal-600 transition"
+          >
+          <iconify-icon icon="mdi:account-plus-outline" class="text-lg"></iconify-icon>
+           <span class="ml-1 text-sm">Excel</span>
+          </button>
+
+          <button
+            (click)="abrirModalAgregar()"
+            class="flex items-center bg-[#00796B] text-white px-3 py-1 rounded hover:bg-teal-600 transition"
+          >
+            <iconify-icon icon="mdi:account-plus-outline" class="text-lg"></iconify-icon>
+            <span class="ml-1 text-sm">Agregar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLA ORIGINAL (Desktop) - NO MODIFICAR -->
+      <div class="desktop-table bg-[#00796B] shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full divide-y divide-gray-200">
+            <thead class="">
+              <tr>
+                <th class="px-2 py-2 text-center text-xs font-medium text-white">ID</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">Empresa</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">RUC</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">Teléfono</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">Contacto</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">Grupo</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-white">Mostrar en Web</th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-white">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let cliente of clientes">
+                <td class="px-2 py-1 text-center text-xs">{{ cliente.id }}</td>
+                <td class="px-4 py-1 text-center text-sm break-words">{{ cliente.nombreEmpresa }}</td>
+                <td class="px-4 py-1 text-center text-xs">{{ cliente.ruc }}</td>
+                <td class="px-4 py-1 text-center text-xs">{{ cliente.telefono }}</td>
+                <td class="px-4 py-1 text-center text-xs">{{ cliente.contacto }}</td>
+                <td class="px-4 py-1 text-center text-xs">{{ cliente.grupo }}</td>
+                <td class="px-4 py-1 text-center text-xs">{{ cliente.mostrarEnWeb ? 'Web' : 'No Web' }}</td>
+                <td class="px-2 py-1 text-center text-xs space-x-2">
+                  <!-- Licencia -->
+                  <button
+                    (click)="abrirModalLicencias(cliente)"
+                    class="inline-flex items-center p-1 hover:bg-gray-100 rounded"
+                    aria-label="Licencia"
+                  >
+                    <iconify-icon icon="mdi:account-key" class="text-yellow-400 text-2xl"></iconify-icon>
+                  </button>
+                  <!-- Editar -->
+                  <button
+                    (click)="abrirModalEditar(cliente)"
+                    class="inline-flex items-center p-1 hover:bg-gray-100 rounded"
+                    aria-label="Editar"
+                  >
+                    <iconify-icon icon="mdi:square-edit-outline" class="text-teal-600 text-2xl"></iconify-icon>
+                  </button>
+                  <!-- Eliminar -->
+                  <button
+                    (click)="abrirModalEliminar(cliente.id)"
+                    class="inline-flex items-center p-1 hover:bg-gray-100 rounded"
+                    aria-label="Eliminar"
+                  >
+                    <iconify-icon icon="mdi:delete-outline" class="text-red-600 text-2xl"></iconify-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VERSIÓN MÓVIL ORIGINAL -->
+      <div class="mobile-version">
+        <!-- Mobile Header -->
+        <div class="mobile-header mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-bold text-gray-900">Clientes</h1>
+            <button
+              (click)="abrirModalAgregar()"
+              class="flex items-center bg-teal-500 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-teal-600 transition"
+            >
+              <iconify-icon icon="mdi:plus" class="mr-1 text-lg"></iconify-icon>
+              <span>Agregar</span>
+            </button>
+          </div>
+          
+          <!-- Mobile Search -->
+          <div class="mb-4">
+            <div class="relative">
+              <input
+                type="text"
+                class="w-full border-2 border-teal-200 rounded-lg px-4 py-3 pl-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
+                placeholder="Buscar por empresa, RUC o contacto..."
+              />
+              <iconify-icon 
+                icon="mdi:magnify" 
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-400 text-lg">
+              </iconify-icon>
+            </div>
+          </div>
+
+          <!-- Mobile Stats -->
+          <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <iconify-icon icon="mdi:account-group" class="text-teal-500 text-xl mr-3"></iconify-icon>
+                <span class="text-gray-700 font-medium">Total de clientes</span>
+              </div>
+              <span class="text-2xl font-bold text-gray-900">{{ clientes.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Cards - Diseño Original -->
+        <div class="mobile-cards space-y-4">
+          <div *ngFor="let cliente of clientes" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Card Header Verde -->
+            <div class="bg-teal-500 px-4 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <iconify-icon icon="mdi:card-account-details-outline" class="text-white text-lg mr-2"></iconify-icon>
+                  <span class="text-white font-semibold">Empresa: {{ cliente.nombreEmpresa }}</span>
+                </div>
+                <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                  {{ cliente.mostrarEnWeb ? 'Web' : 'No Web' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card Body - Layout Original -->
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <!-- Columna Izquierda -->
+                <div class="space-y-3">
+                  <!-- RUC -->
+                  <div class="flex items-start">
+                    <iconify-icon icon="mdi:card-account-details" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                    <div>
+                      <p class="text-xs text-gray-500 mb-1">RUC</p>
+                      <p class="text-sm font-medium text-gray-900">{{ cliente.ruc || 'N/A' }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Contacto -->
+                  <div class="flex items-start">
+                    <iconify-icon icon="mdi:account" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                    <div>
+                      <p class="text-xs text-gray-500 mb-1">Contacto</p>
+                      <p class="text-sm font-medium text-gray-900">{{ cliente.contacto || 'N/A' }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="space-y-3">
+                  <!-- Teléfono -->
+                  <div class="flex items-start">
+                    <iconify-icon icon="mdi:phone" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                    <div>
+                      <p class="text-xs text-gray-500 mb-1">Teléfono</p>
+                      <p class="text-sm font-medium text-gray-900">{{ cliente.telefono || 'N/A' }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Grupo -->
+                  <div class="flex items-start">
+                    <iconify-icon icon="mdi:account-group" class="text-gray-400 text-lg mr-2 mt-0.5"></iconify-icon>
+                    <div>
+                      <p class="text-xs text-gray-500 mb-1">Grupo</p>
+                      <p class="text-sm font-medium text-gray-900">{{ cliente.grupo || 'N/A' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions - Diseño Original -->
+              <div class="flex items-center justify-end space-x-3 pt-3 border-t border-gray-100">
+                <!-- Licencias -->
+                <button
+                  (click)="abrirModalLicencias(cliente)"
+                  class="flex items-center bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-3 py-2 rounded-lg transition-colors border border-yellow-200"
+                >
+                  <iconify-icon icon="mdi:account-key" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-sm font-medium">Licencias</span>
+                </button>
+
+                <!-- Editar -->
+                <button
+                  (click)="abrirModalEditar(cliente)"
+                  class="flex items-center bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-2 rounded-lg transition-colors border border-teal-200"
+                >
+                  <iconify-icon icon="mdi:square-edit-outline" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-sm font-medium">Editar</span>
+                </button>
+
+                <!-- Eliminar -->
+                <button
+                  (click)="abrirModalEliminar(cliente.id)"
+                  class="flex items-center bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg transition-colors border border-red-200"
+                >
+                  <iconify-icon icon="mdi:delete-outline" class="text-lg mr-1"></iconify-icon>
+                  <span class="text-sm font-medium">Eliminar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for Mobile -->
+          <div *ngIf="clientes.length === 0" class="text-center py-12">
+            <iconify-icon icon="mdi:account-off" class="text-gray-300 text-6xl mb-4"></iconify-icon>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No hay clientes</h3>
+            <p class="text-gray-500 mb-4">Comienza agregando tu primer cliente</p>
+            <button
+              (click)="abrirModalAgregar()"
+              class="inline-flex items-center bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition"
+            >
+              <iconify-icon icon="mdi:account-plus-outline" class="text-lg mr-2"></iconify-icon>
+              Agregar Cliente
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar -->
+<app-agregar-cliente-modal
+  *ngIf="mostrarModalAgregar"
+  (cerrar)="cerrarModalAgregar()"
+  (creado)="cargarClientes()"
+></app-agregar-cliente-modal>
+
+<!-- Modal Editar -->
+<app-editar-cliente-modal
+  *ngIf="mostrarModalEditar"
+  [cliente]="clienteSeleccionado"
+  (cerrar)="cerrarModalEditar()"
+  (actualizado)="cargarClientes()"
+></app-editar-cliente-modal>
+
+<!-- Modal Eliminar -->
+<app-eliminar-cliente-modal
+  *ngIf="mostrarModalEliminar"
+  [clienteId]="clienteIdAEliminar"
+  (confirmar)="eliminarCliente($event)"
+  (cancelar)="cerrarModalEliminar()"
+></app-eliminar-cliente-modal>
+
+<!-- Modal Licencias -->
+<app-licencia-productos-modal
+  *ngIf="mostrarModalLicencias"
+  [cliente]="clienteConLicencias"
+  [mostrar]="mostrarModalLicencias"
+  (cerrar)="cerrarModalLicencias()"
+  (guardar)="guardarLicencias($event)"
+></app-licencia-productos-modal>

@@ -1,0 +1,207 @@
+/* Mismo contenido que direccion.component.css */
+/* Estilos para el editor desktop */
+.desktop-editor ::ng-deep .ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background-color: #f8f9fa;
+  padding: 8px;
+}
+
+.desktop-editor ::ng-deep .ql-container {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  height: calc(100% - 42px);
+}
+
+.desktop-editor ::ng-deep .ql-editor {
+  padding: 12px 15px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Estilos CORREGIDOS para el editor móvil */
+@media (max-width: 767px) {
+  .mobile-editor-full ::ng-deep .ql-toolbar {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    display: block !important;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-container {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    font-size: 16px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-editor {
+    padding: 16px;
+    line-height: 1.6;
+    min-height: 250px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-formats {
+    margin-right: 12px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar button,
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-picker {
+    padding: 8px;
+    margin: 2px;
+    min-height: 36px;
+    min-width: 36px;
+    border-radius: 4px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-align .ql-picker-label,
+  .mobile-editor-full ::ng-deep .ql-align .ql-picker-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-align .ql-picker-label::before,
+  .mobile-editor-full ::ng-deep .ql-align .ql-picker-item::before {
+    font-size: 14px !important;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-picker-options {
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .mobile-editor-full ::ng-deep .ql-picker-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-picker-item:hover {
+    background-color: #f5f5f5;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-color .ql-picker-options,
+  .mobile-editor-full ::ng-deep .ql-background .ql-picker-options {
+    width: 200px;
+    padding: 8px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-color .ql-picker-item,
+  .mobile-editor-full ::ng-deep .ql-background .ql-picker-item {
+    width: 28px;
+    height: 28px;
+    margin: 2px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    padding: 0;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-color .ql-picker-item:hover,
+  .mobile-editor-full ::ng-deep .ql-background .ql-picker-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px #007bff;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar button.ql-active,
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-picker-label.ql-active {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-formats:not(:last-child) {
+    border-right: 1px solid #e5e7eb;
+    padding-right: 8px;
+  }
+}
+
+.prose {
+  color: #374151;
+}
+
+.prose h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+.prose h2 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 0.4em 0;
+}
+
+.prose h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0.3em 0;
+}
+
+.prose p {
+  margin: 0.5em 0;
+}
+
+.prose ul, .prose ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.prose pre {
+  background-color: #f3f4f6;
+  padding: 1em;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

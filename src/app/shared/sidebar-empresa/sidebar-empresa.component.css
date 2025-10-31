@@ -1,0 +1,240 @@
+/* Desktop: Mantener estilos originales del sidebar */
+.menu-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 8px;
+  height: 50px;
+}
+
+.unified-container {
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 8px 0 0 8px;
+  z-index: 2;
+  box-shadow: none;
+  border: none;
+}
+
+.menu-item:hover .unified-container {
+  width: 200px;
+  width: 130px; /* Ancho expandido (icono + etiqueta) */
+}
+
+.icon-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  width: 60px;
+  height: 50px;
+  margin-left: 10px;
+}
+
+.label-part {
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 0px;
+  margin-right: 8px;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.label-part2 {
+  padding: 0px;
+  white-space: nowrap;
+  opacity: 0;
+  margin-right: 8px;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.menu-item:hover .label-part {
+  opacity: 1;
+}
+
+.label-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Colores de fondo */
+.bg-teal-500 {
+  background-color: #14b8a6;
+}
+
+.bg-orange-500 {
+  background-color: #f97316;
+}
+
+.bg-orange-400 {
+  background-color: #f97316 !important;
+}
+
+/* Móvil: Estilos para navegación horizontal */
+@media (max-width: 767px) {
+  /* Ocultar desktop en móvil */
+  .hidden.md\:block {
+    display: none !important;
+  }
+
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Mostrar móvil */
+  .md\:hidden {
+    display: block;
+  }
+
+  .mobile-sidebar {
+    display: block;
+  }
+
+  /* Gradiente del header */
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #fb923c, #14b8a6);
+  }
+
+  .mobile-header {
+    background: linear-gradient(to right, #fb923c, #14b8a6);
+  }
+
+  /* Navegación horizontal */
+  .overflow-x-auto {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .mobile-nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Botones de navegación móvil */
+  .min-w-\[70px\] {
+    min-width: 70px;
+  }
+
+  .mobile-nav-button {
+    min-width: 70px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Transiciones suaves */
+  .transition-all {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Sombras */
+  .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Estados de hover para móvil */
+  button:hover {
+    transform: translateY(-1px);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  .mobile-nav-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .mobile-nav-button:active {
+    transform: translateY(0);
+  }
+
+  /* Colores para botones móviles */
+  .bg-orange-500 {
+    background-color: #f97316;
+  }
+
+  .bg-gray-100 {
+    background-color: #f3f4f6;
+  }
+
+  .hover\:bg-gray-200:hover {
+    background-color: #e5e7eb;
+  }
+
+  .text-gray-600 {
+    color: #4b5563;
+  }
+
+  .mobile-nav-button.active {
+    background-color: #f97316;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-nav-button.inactive {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+
+  .mobile-nav-button.inactive:hover {
+    background-color: #e5e7eb;
+  }
+}
+
+/* Desktop: Ocultar versión móvil */
+@media (min-width: 768px) {
+  .md\:hidden {
+    display: none;
+  }
+
+  .mobile-sidebar {
+    display: none;
+  }
+
+  .desktop-sidebar {
+    display: block;
+  }
+}
+
+/* Efectos al hacer hover */
+.iconify-icon {
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover .iconify-icon {
+  transform: scale(1.1);
+}
+
+.menu-item.active .label-part2 {
+  opacity: 1;
+}

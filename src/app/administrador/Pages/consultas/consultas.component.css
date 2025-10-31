@@ -1,0 +1,346 @@
+/* Desktop: Mantener diseño original - NO cambiar nada */
+/* El diseño desktop se mantiene exactamente igual */
+
+/* MÓVIL: Diseño optimizado para consultas */
+@media (max-width: 767px) {
+  /* Ocultar la versión desktop en móvil */
+  .desktop-header,
+  .desktop-table {
+    display: none !important;
+  }
+
+  /* Mostrar solo la versión móvil */
+  .mobile-version {
+    display: block;
+  }
+
+  /* Ajustar contenedor principal para móvil */
+  .max-w-screen.mx-5 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .flex-1.w-full.mt-2.p-1 {
+    padding: 0.5rem;
+  }
+
+  /* Header móvil */
+  .mobile-header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  /* Campo de búsqueda móvil */
+  .mobile-header input[type="text"] {
+    border: 2px solid #99f6e4;
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+
+  .mobile-header input[type="text"]:focus {
+    outline: none;
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+
+  /* Stats card */
+  .mobile-header .bg-white {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Leyenda móvil */
+  .mobile-header .bg-\[#F28C7F\] {
+    background-color: #f28c7f;
+  }
+
+  /* Cards de consultas */
+  .mobile-cards .bg-white {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .mobile-cards .bg-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Header de las cards - gradiente teal */
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #14b8a6, #0d9488);
+  }
+
+  /* Layout de información - dos columnas */
+  .mobile-cards .grid.grid-cols-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  /* Grid de botones de acción - 5 columnas */
+  .mobile-cards .grid.grid-cols-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+  }
+
+  /* Estilos específicos para cada botón */
+  .bg-orange-50 {
+    background-color: #fff7ed;
+    border: 1px solid #fed7aa;
+  }
+
+  .bg-orange-50:hover {
+    background-color: #ffedd5;
+    transform: scale(1.02);
+  }
+
+  .text-orange-700 {
+    color: #c2410c;
+  }
+
+  .bg-purple-50 {
+    background-color: #faf5ff;
+    border: 1px solid #d8b4fe;
+  }
+
+  .bg-purple-50:hover {
+    background-color: #f3e8ff;
+    transform: scale(1.02);
+  }
+
+  .text-purple-700 {
+    color: #7c3aed;
+  }
+
+  .bg-cyan-50 {
+    background-color: #ecfeff;
+    border: 1px solid #67e8f9;
+  }
+
+  .bg-cyan-50:hover {
+    background-color: #cffafe;
+    transform: scale(1.02);
+  }
+
+  .text-cyan-700 {
+    color: #0e7490;
+  }
+
+  .bg-teal-50 {
+    background-color: #f0fdfa;
+    border: 1px solid #5eead4;
+  }
+
+  .bg-teal-50:hover {
+    background-color: #ccfbf1;
+    transform: scale(1.02);
+  }
+
+  .text-teal-700 {
+    color: #0f766e;
+  }
+
+  .bg-red-50 {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+  }
+
+  .bg-red-50:hover {
+    background-color: #fee2e2;
+    transform: scale(1.02);
+  }
+
+  .text-red-700 {
+    color: #b91c1c;
+  }
+
+  /* Transiciones suaves */
+  .mobile-cards button {
+    transition: all 0.2s ease-in-out;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Badge de estado */
+  .bg-green-100 {
+    background-color: #dcfce7;
+  }
+
+  .text-green-800 {
+    color: #166534;
+  }
+
+  .bg-gray-100 {
+    background-color: #f3f4f6;
+  }
+
+  .text-gray-800 {
+    color: #1f2937;
+  }
+
+  /* Animación para el estado vacío */
+  .text-center {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Espaciado mejorado para elementos táctiles */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Mejoras de accesibilidad */
+  button:focus {
+    outline: 2px solid #14b8a6;
+    outline-offset: 2px;
+  }
+
+  /* Mejoras para texto largo */
+  .mobile-cards .text-sm {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .mobile-cards .leading-relaxed {
+    line-height: 1.6;
+  }
+
+  /* Títulos de consultas que pueden ser largos */
+  .mobile-cards .leading-tight {
+    line-height: 1.25;
+  }
+
+  /* Estilos para paginador móvil */
+  .mobile-pagination {
+    display: block;
+  }
+
+  .mobile-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .mobile-pagination button:disabled:hover {
+    transform: none;
+    background-color: inherit;
+  }
+
+  /* Botones de página activa */
+  .mobile-pagination .bg-teal-500 {
+    background-color: #14b8a6;
+    color: white;
+  }
+
+  /* Botones de página inactiva */
+  .mobile-pagination .bg-gray-100 {
+    background-color: #f3f4f6;
+  }
+
+  .mobile-pagination .hover\:bg-gray-200:hover {
+    background-color: #e5e7eb;
+  }
+
+  /* Botones de navegación */
+  .mobile-pagination .bg-teal-50 {
+    background-color: #f0fdfa;
+  }
+
+  .mobile-pagination .hover\:bg-teal-100:hover {
+    background-color: #ccfbf1;
+  }
+
+  .mobile-pagination .text-teal-700 {
+    color: #0f766e;
+  }
+
+  .mobile-pagination .text-teal-600 {
+    color: #0d9488;
+  }
+
+  .mobile-pagination .hover\:bg-teal-50:hover {
+    background-color: #f0fdfa;
+  }
+
+  /* Transiciones suaves para botones de paginación */
+  .mobile-pagination button {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .mobile-pagination button:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  /* Espaciado para números de página */
+  .mobile-pagination .space-x-1 > * + * {
+    margin-left: 0.25rem;
+  }
+
+  /* Responsive para números de página */
+  @media (max-width: 480px) {
+    .mobile-pagination .space-x-1 {
+      gap: 0.125rem;
+    }
+
+    .mobile-pagination .w-8.h-8 {
+      width: 1.75rem;
+      height: 1.75rem;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+/* Desktop: Ocultar versión móvil */
+@media (min-width: 768px) {
+  .mobile-version {
+    display: none;
+  }
+}
+
+/* Desktop: Ocultar paginador móvil */
+@media (min-width: 768px) {
+  .mobile-pagination {
+    display: none;
+  }
+}
+
+/* Estados de carga */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Hover effects para desktop */
+@media (min-width: 768px) {
+  .desktop-table tbody tr:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .desktop-table button:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease-in-out;
+  }
+}

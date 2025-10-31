@@ -1,0 +1,164 @@
+/* Estilos para el editor desktop */
+.desktop-editor ::ng-deep .ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background-color: #f8f9fa;
+  padding: 8px;
+}
+
+.desktop-editor ::ng-deep .ql-container {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  height: calc(100% - 42px);
+}
+
+.desktop-editor ::ng-deep .ql-editor {
+  padding: 12px 15px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Estilos específicos para el editor móvil completo */
+@media (max-width: 767px) {
+  .mobile-editor-full ::ng-deep .ql-toolbar {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-container {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
+  .mobile-editor-full ::ng-deep .ql-editor {
+    padding: 16px;
+    line-height: 1.6;
+    min-height: 300px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Optimizar toolbar para móvil */
+  .mobile-editor-full ::ng-deep .ql-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-formats {
+    margin-right: 8px;
+    margin-bottom: 4px;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-toolbar button,
+  .mobile-editor-full ::ng-deep .ql-toolbar .ql-picker {
+    padding: 6px;
+    margin: 0 1px;
+    min-height: 32px;
+  }
+
+  /* Mejorar dropdowns en móvil */
+  .mobile-editor-full ::ng-deep .ql-picker-options {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .mobile-editor-full ::ng-deep .ql-picker-item {
+    padding: 8px 12px;
+  }
+
+  /* Colores más accesibles en móvil */
+  .mobile-editor-full ::ng-deep .ql-color-picker .ql-picker-item,
+  .mobile-editor-full ::ng-deep .ql-background .ql-picker-item {
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+  }
+}
+
+/* Estilos para el contenido con formato */
+.prose {
+  color: #374151;
+}
+
+.prose h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+.prose h2 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 0.4em 0;
+}
+
+.prose h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0.3em 0;
+}
+
+.prose p {
+  margin: 0.5em 0;
+}
+
+.prose ul, .prose ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.prose pre {
+  background-color: #f3f4f6;
+  padding: 1em;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+/* Animaciones */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
