@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://megayuntasapi.abacontsac.com",
+    "target": "https://megayuntasapi.amazon.dev",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://megayuntasapi.abacontsac.com/api'
+  apiUrl: 'https://megayuntasapi.amazon.dev/api'
 };
