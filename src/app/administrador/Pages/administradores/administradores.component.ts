@@ -37,7 +37,6 @@ export class AdministradoresComponent implements OnInit {
   cargarAdministradores(): void {
     this.administradorService.getAdministradores().subscribe({
       next: (data) => {
-        console.log('Datos recibidos del servicio:', data); // Debug
         this.admins = data.map((a: any) => ({
           id: a.id,
           nombre: a.nombres,
@@ -46,7 +45,6 @@ export class AdministradoresComponent implements OnInit {
           email: a.email,
           perfil: a.rol,
         }));
-        console.log('Administradores procesados:', this.admins); // Debug
       },
       error: (err) => {
         console.error('Error al cargar administradores', err);

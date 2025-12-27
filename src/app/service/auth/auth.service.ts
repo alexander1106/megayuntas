@@ -44,7 +44,7 @@ verify2FA(username: string, code: string) {
 
 enable2FA(username: string) {
       return this.http.get<{ otpAuthUrl: string; secret: string }>(
-        `http://localhost:8080/api/auth/generate-qr/${username}`
+        `${this.apiUrl}/generate-qr/${username}`
       );
     }
 

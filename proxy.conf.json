@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://megayuntasapi.amazon.dev",
+    "target": "https://megayuntasapi.amazoncode.dev",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
