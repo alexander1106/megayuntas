@@ -40,7 +40,7 @@ actualizarAdministrador(adm: any): Observable<any> {
     if (!adm.nuevaPassword || !adm.confirmarPassword) {
       throw new Error('Si proporciona la contraseña actual, debe completar nueva contraseña y confirmar contraseña');
     }
-    
+
     if (adm.nuevaPassword !== adm.confirmarPassword) {
       throw new Error('La nueva contraseña y la confirmación no coinciden');
     }

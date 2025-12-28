@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://megayuntasapi.amazoncode.dev/api'
+  apiUrl: 'http://localhost:8080/api'
 };

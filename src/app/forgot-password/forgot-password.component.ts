@@ -29,38 +29,34 @@ onSubmit(form: NgForm) {
   this.loading = true;
 
   this.authService.forgotPassword(this.email).subscribe({
-    next: (response) => {
+    next: () => {
       this.loading = false;
 
-      // ✅ Esperar 2 segundos antes de mostrar la alerta
-      setTimeout(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Correo enviado',
-          text: 'Se ha enviado un enlace de recuperación a tu correo electrónico.',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Aceptar'
-        });
-      }, 2000);
-
-      form.reset();
+      Swal.fire({
+        icon: 'success',
+        title: 'Correo enviado',
+        text: 'Se ha enviado un enlace de recuperación a tu correo electrónico.',
+        confirmButtonColor: '#00A89D',
+        confirmButtonText: 'Aceptar',
+      }).then(() => {
+        form.reset();
+      });
     },
+
     error: (err) => {
       this.loading = false;
       console.error(err);
 
-      // También puedes agregar retraso para errores si quieres
-      setTimeout(() => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo enviar el correo. Intenta nuevamente.',
-          confirmButtonColor: '#d33',
-          confirmButtonText: 'Cerrar'
-        });
-      }, 2000);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo enviar el correo. Intenta nuevamente.',
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Cerrar',
+      });
     },
   });
 }
+
 
 }
