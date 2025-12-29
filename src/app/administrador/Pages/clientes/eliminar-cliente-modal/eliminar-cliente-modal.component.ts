@@ -1,5 +1,5 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from "@angular/core"
-import { CommonModule } from "@angular/common"
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-eliminar-cliente-modal",
@@ -9,19 +9,20 @@ import { CommonModule } from "@angular/common"
   templateUrl: "./eliminar-cliente-modal.component.html",
 })
 export class EliminarClienteModalComponent {
-  @Input() clienteId: number | null = null
-  @Output() confirmar = new EventEmitter<number>()
-  @Output() cancelar = new EventEmitter<void>()
+  // ⭐ CAMBIO: ID es string (hash encriptado)
+  @Input() clienteId: string | null = null;
+  
+  // ⭐ CAMBIO: Evento emite string
+  @Output() confirmar = new EventEmitter<string>();
+  @Output() cancelar = new EventEmitter<void>();
 
-  // Método para confirmar la eliminación
   confirmarEliminacion(): void {
-    if (this.clienteId !== null) {
-      this.confirmar.emit(this.clienteId)
+    if (this.clienteId) {
+      this.confirmar.emit(this.clienteId);
     }
   }
 
-  // Método para cancelar la eliminación
   cancelarEliminacion(): void {
-    this.cancelar.emit()
+    this.cancelar.emit();
   }
 }

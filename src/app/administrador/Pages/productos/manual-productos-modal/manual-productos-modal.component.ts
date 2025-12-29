@@ -19,7 +19,10 @@ interface Documento {
 })
 export class ManualProductosModalComponent {
   @Input() nombreProducto: string = ""
-  @Input() productoId: number | null = null
+  
+  // ⭐ CAMBIO: ID es string (hash encriptado)
+  @Input() productoId: string | null = null
+  
   @Output() cerrarModal = new EventEmitter<void>()
   @Output() guardarDocumento = new EventEmitter<any>()
 
@@ -32,7 +35,7 @@ export class ManualProductosModalComponent {
   mensajeError = ""
   mensajeExito = ""
 
-  // Documentos existentes (simulados - en producción vendrían del backend)
+  // Documentos existentes (Mocks - idealmente cargar desde servicio usando productoId)
   documentosExistentes: Documento[] = [
     {
       id: "1",
@@ -67,8 +70,6 @@ export class ManualProductosModalComponent {
     if (file) {
       this.procesarArchivo(file)
     }
-
-    // Reset input
     input.value = ""
   }
 
@@ -88,7 +89,6 @@ export class ManualProductosModalComponent {
     event.preventDefault()
     event.stopPropagation()
     this.isDragOver = false
-
     const files = event.dataTransfer?.files
     if (files && files.length > 0) {
       this.procesarArchivo(files[0])
@@ -141,11 +141,9 @@ export class ManualProductosModalComponent {
 
   formatFileSize(bytes: number): string {
     if (bytes === 0) return "0 Bytes"
-
     const k = 1024
     const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 
@@ -155,19 +153,15 @@ export class ManualProductosModalComponent {
   }
 
   descargarDocumento(documento: Documento) {
-    // Simular descarga
     const link = document.createElement("a")
     link.href = documento.url
     link.download = documento.nombre
     link.click()
-
-    console.log("Descargando documento:", documento.nombre)
   }
 
   eliminarDocumento(documento: Documento) {
     if (confirm(`¿Estás seguro de que quieres eliminar "${documento.nombre}"?`)) {
       this.documentosExistentes = this.documentosExistentes.filter((doc) => doc.id !== documento.id)
-      console.log("Documento eliminado:", documento.nombre)
     }
   }
 
@@ -178,7 +172,7 @@ export class ManualProductosModalComponent {
     }
 
     const documentoData = {
-      productoId: this.productoId,
+      productoId: this.productoId, // String
       nombreProducto: this.nombreProducto,
       archivo: this.archivoSeleccionado,
       fechaSubida: new Date(),

@@ -5,13 +5,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 
 export interface Cliente {
-  id: number;
+  id: string; // ⭐ ID Encriptado (String)
   nombreEmpresa: string;
-  ruc: string;  // Cambiado de 'Ruc' a 'ruc' (minúscula)
+  ruc: string;
   telefono: string;
   contacto: string;
   grupo: string;
-  mostrarEnWeb: boolean;  // Cambiado de 'mostrarenWeb: string' a 'mostrarEnWeb: boolean'
+  mostrarEnWeb: boolean;
 }
 
 @Injectable({
@@ -25,7 +25,7 @@ export class ClientesService {
   private authHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || '';
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
@@ -47,19 +47,20 @@ export class ClientesService {
     );
   }
 
-  /** PUT /api/clientes/:id — Actualizar cliente */
-  actualizarCliente(id: number, cliente: Omit<Cliente, 'id'>): Observable<Cliente> {
+  /** PUT /api/clientes — Actualizar cliente */
+  // ⭐ El ID va dentro del objeto 'cliente' en el body
+  actualizarCliente(cliente: Cliente): Observable<Cliente> {
     return this.http.put<Cliente>(
-      `${this.baseUrl}/${id}`,
+      this.baseUrl, // Se envía a la raíz, el backend extrae el ID del body
       cliente,
       { headers: this.authHeaders() }
     );
   }
 
   /** DELETE /api/clientes/:id — Eliminar cliente */
-  eliminarCliente(id: number): Observable<void> {
+  eliminarCliente(idEncriptado: string): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}/${id}`,
+      `${this.baseUrl}/${idEncriptado}`, // ⭐ ID en la URL
       { headers: this.authHeaders() }
     );
   }
@@ -72,9 +73,9 @@ export class ClientesService {
   }
 
   /** GET /api/clientes/:id — Obtener cliente por ID */
-  getClientePorId(id: number): Observable<Cliente> {
+  getClientePorId(idEncriptado: string): Observable<Cliente> {
     return this.http.get<Cliente>(
-      `${this.baseUrl}/${id}`,
+      `${this.baseUrl}/${idEncriptado}`,
       { headers: this.authHeaders() }
     );
   }

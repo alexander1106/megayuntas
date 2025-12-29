@@ -1,6 +1,6 @@
 // src/app/service/empresas/empresas.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 
@@ -22,10 +22,13 @@ export class EmpresasService {
 
   private authHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
   }
 
-  /** GET /api/nosotros → trae todo el objeto */
+  /** GET /api/nosotros */
   getInfoInstitucional(): Observable<InfoInstitucional> {
     return this.http.get<InfoInstitucional>(
       this.baseUrl,
@@ -33,19 +36,13 @@ export class EmpresasService {
     );
   }
 
-  /** PUT /api/nosotros?campo1=...&campo2=... → actualiza solo los que envíes */
+  /** PUT /api/nosotros */
+  // CAMBIO: Se envía como JSON Body, más seguro y capaz para textos largos
   actualizarInfoInstitucional(data: InfoInstitucional): Observable<any> {
-    let params = new HttpParams();
-    if (data.descripcion) { params = params.set('descripcion', data.descripcion); }
-    if (data.mision)      { params = params.set('mision', data.mision); }
-    if (data.vision)      { params = params.set('vision', data.vision); }
-    if (data.telefono)    { params = params.set('telefono', data.telefono); }
-    if (data.direccion)   { params = params.set('direccion', data.direccion); }
-
     return this.http.put(
       this.baseUrl,
-      null,
-      { headers: this.authHeaders(), params }
+      data, 
+      { headers: this.authHeaders() }
     );
   }
 }

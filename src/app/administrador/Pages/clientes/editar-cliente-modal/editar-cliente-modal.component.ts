@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ClientesService } from '../../../../service/admin/clientes/clientes.service'; // Ajusta la ruta
 
 @Component({
   selector: 'app-editar-cliente-modal',
@@ -10,11 +11,13 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './editar-cliente-modal.component.html',
   styleUrl: './editar-cliente-modal.component.css'
 })
-export class EditarClienteModalComponent {
+export class EditarClienteModalComponent implements OnInit {
+  @Input() clienteData: any = null; // Recibe el cliente a editar
   @Output() cerrar = new EventEmitter<void>();
   
-  // Modelo para el formulario
-  cliente = {
+  // Modelo local
+  cliente: any = {
+    id: '', // ⭐ String (Hash)
     empresa: '',
     opinion: '',
     ruc: '',
@@ -27,31 +30,67 @@ export class EditarClienteModalComponent {
     mostrarWeb: false
   };
 
-  // Método para cerrar el modal
+  constructor(private clientesService: ClientesService) {}
+
+  ngOnInit(): void {
+    // Cargar datos recibidos en el modelo local
+    if (this.clienteData) {
+      this.cliente = {
+        id: this.clienteData.id,
+        empresa: this.clienteData.nombreEmpresa, // Mapeo de nombre
+        ruc: this.clienteData.ruc,
+        telefono: this.clienteData.telefono,
+        contacto: this.clienteData.contacto,
+        grupo: this.clienteData.grupo,
+        mostrarWeb: this.clienteData.mostrarEnWeb,
+        // Mapea los demás campos si vienen del backend
+        direccion: this.clienteData.direccion || '',
+        opinion: this.clienteData.opinion || '',
+        localidad: this.clienteData.localidad || '',
+        nombreComercial: this.clienteData.nombreComercial || ''
+      };
+    }
+  }
+
   cerrarModal(): void {
     this.cerrar.emit();
   }
 
-  // Método para guardar el cliente
   guardarCliente(): void {
-    console.log('Cliente guardado:', this.cliente);
-    // Aquí implementarías la lógica para guardar el cliente
-    this.cerrarModal();
+    // Preparar DTO para el servicio
+    const clienteActualizadoDTO = {
+      id: this.cliente.id, // ID encriptado
+      nombreEmpresa: this.cliente.empresa,
+      ruc: this.cliente.ruc,
+      telefono: this.cliente.telefono,
+      contacto: this.cliente.contacto,
+      grupo: this.cliente.grupo,
+      mostrarEnWeb: this.cliente.mostrarWeb,
+      // Otros campos...
+    };
+
+    console.log('Actualizando cliente:', clienteActualizadoDTO);
+
+    this.clientesService.actualizarCliente(clienteActualizadoDTO).subscribe({
+      next: (res) => {
+        console.log('Cliente actualizado:', res);
+        this.cerrarModal();
+      },
+      error: (err) => {
+        console.error('Error al actualizar:', err);
+        alert('Error al actualizar el cliente');
+      }
+    });
   }
 
-  // Método para consultar RUC
   consultarRUC(): void {
     console.log('Consultando RUC:', this.cliente.ruc);
-    // Implementar lógica para consultar RUC
   }
 
-  // Método para subir imagen
   subirImagen(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       console.log('Imagen seleccionada:', input.files[0].name);
-      // Implementar lógica para procesar la imagen
     }
   }
 }
-

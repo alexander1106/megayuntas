@@ -1,12 +1,21 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, AfterViewInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../service/auth/auth.service';
+import { AuthService } from '../service/auth/auth.service'; // Ajusta la ruta si es necesario
 import Swal from 'sweetalert2';
 import { QRCodeModule } from 'angularx-qrcode';
 
-declare const google: any;
+// Interfaces locales para tipado
+interface LoginResponse {
+  data?: {
+    token?: string;
+    require2FA?: boolean;
+    username?: string;
+  };
+  message?: string;
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -16,154 +25,163 @@ declare const google: any;
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  isForgotPasswordMode: boolean = false;
+  isForgotPasswordMode = false;
+  isLoginMode = true;
+  isLoading = false;
+  showPassword = false;
+  mostrarModalOTP = false;
 
+  // Datos de formularios
   loginData = {
     user: '',
     password: ''
   };
 
-registerData = {
-  nombres: '',
-  apellidos: '',
-  username: '',
-  password: '',
-  confirmPassword: '',
-  email: '',
-  suscripcion: 1,
-  idRol:1
+  registerData = {
+    nombres: '',
+    apellidos: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    email: '',
+    suscripcion: 1, // ID numérico por defecto (Backend lo espera así)
+    idRol: 1        // ID numérico por defecto
+  };
 
-};
-  error = '';
-  isLoginMode = true;
+  // Variables para 2FA
   username = '';
   tokenTemporal = '';
-  mostrarModalOTP = false;
-  isLoading = false;
-  showPassword = false;
+  qrCodeUrl = '';
+  error = '';
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
-  // Login tradicional
-onLogin(form: NgForm) {
-  if (form.invalid) return;
-  this.isLoading = true;
-  this.authService.login(this.loginData.user, this.loginData.password).subscribe({
-    next: (response: any) => {
-      console.log('🔹 Respuesta del servidor:', response);
-      const data = response?.data;
-      if (!data) {
-        console.error('❌ No hay data en la respuesta del backend.');
-        this.isLoading = false;
-        return;
-      }
-      // 🟡 Caso: requiere 2FA → mostrar QR
-    if (data.require2FA) {
-  console.log('🟡 Usuario requiere 2FA, mostrando QR...');
-  this.username = data.username; // ✅ usar el username, no el email
-  this.enable2FA(data.username);          // ✅ correcto
-  this.isLoading = false;
-  return;
-}
-      // 🟢 Caso: NO requiere 2FA → guardar token y redirigir
-      if (data.token) {
-        console.log('✅ Token recibido, guardando y redirigiendo...');
-        localStorage.setItem('token', data.token);
-        this.router.navigate(['/admin']).then(success => {
-          console.log('➡️ Navegación a dashboard:', success);
-        });
-      } else {
-        console.warn('⚠️ No se recibió token válido del backend.');
-      }
-      this.isLoading = false;
-    },
-    error: (err) => {
-      this.isLoading = false;
-      console.error('❌ Error al iniciar sesión:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error de autenticación',
-        text: 'Credenciales incorrectas o error en el servidor.'
-      });
-    }
-  });
-}
+  // --- LOGIN ---
+  onLogin(form: NgForm) {
+    if (form.invalid) return;
+    
+    this.isLoading = true;
+    this.authService.login(this.loginData.user, this.loginData.password).subscribe({
+      next: (response: any) => { // Puedes usar LoginResponse si tu servicio lo tipa
+        console.log('🔹 Respuesta del servidor:', response);
+        const data = response?.data;
 
+        if (!data) {
+          this.handleError('Respuesta inválida del servidor');
+          return;
+        }
 
-  // Registro básico
-onRegister() {
-  if (this.registerData.password !== this.registerData.confirmPassword) {
-    this.error = 'Las contraseñas no coinciden';
-    return;
+        // Caso 1: Requiere 2FA
+        if (data.require2FA) {
+          console.log('🟡 Requiere 2FA');
+          this.username = data.username || this.loginData.user;
+          this.enable2FA(this.username);
+          this.isLoading = false;
+          return;
+        }
+
+        // Caso 2: Login Exitoso Directo
+        if (data.token) {
+          this.procesarLoginExitoso(data.token);
+        } else {
+          this.handleError('No se recibió el token de acceso');
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error login:', err);
+        this.handleError('Credenciales incorrectas o error de conexión');
+      }
+    });
   }
 
-  console.log('Datos de registro:', this.registerData);
+  // --- REGISTRO ---
+  onRegister() {
+    if (this.registerData.password !== this.registerData.confirmPassword) {
+      this.error = 'Las contraseñas no coinciden';
+      return;
+    }
 
-  this.authService.registerUser(this.registerData).subscribe({
-    next: (res) => {
-      console.log('✅ Usuario registrado:', res);
-      Swal.fire({
-        icon: 'success',
-        title: 'Registro exitoso',
-        text: 'Tu cuenta ha sido creada correctamente.',
-      });
-      // Puedes redirigir o volver al login
-      this.isLoginMode = true;
-    },
-    error: (err) => {
-      console.error('❌ Error en registro:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al registrar',
-        text: 'No se pudo crear el usuario. Inténtalo nuevamente.',
-      });
-    },
-  });
-}
+    this.isLoading = true;
+    this.authService.registerUser(this.registerData).subscribe({
+      next: (res) => {
+        console.log('✅ Usuario registrado:', res);
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Tu cuenta ha sido creada. Por favor inicia sesión.',
+        });
+        this.isLoginMode = true;
+      },
+      error: (err) => {
+        console.error('❌ Error registro:', err);
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar',
+          text: err.error?.message || 'No se pudo crear el usuario.'
+        });
+      }
+    });
+  }
 
+  // --- 2FA LOGIC ---
+  enable2FA(username: string) {
+    this.authService.enable2FA(username).subscribe({
+      next: (res: any) => {
+        this.qrCodeUrl = res.otpAuthUrl;
+        this.mostrarModalOTP = true;
+      },
+      error: (err: any) => {
+        console.error('Error activando 2FA:', err);
+        this.handleError('No se pudo iniciar el proceso de doble factor');
+      }
+    });
+  }
+
+  verificarCodigo2FA() {
+    if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
+      this.error = 'El código debe tener 6 dígitos';
+      return;
+    }
+
+    this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
+      next: (res: any) => {
+        this.mostrarModalOTP = false;
+        this.procesarLoginExitoso(res.token);
+      },
+      error: (err: any) => {
+        this.error = 'Código incorrecto o expirado';
+      }
+    });
+  }
+
+  // --- UTILIDADES ---
+  private procesarLoginExitoso(token: string) {
+    localStorage.setItem('token', token);
+    console.log('✅ Login exitoso');
+    this.router.navigate(['/admin']);
+    this.isLoading = false;
+  }
+
+  private handleError(mensaje: string) {
+    this.isLoading = false;
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje
+    });
+  }
 
   toggleMode() {
     this.isLoginMode = !this.isLoginMode;
     this.error = '';
   }
 
-    togglePasswordVisibility() {
+  togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
-  }
-
-  verificarCodigo2FA() {
-  if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
-    this.error = 'Ingrese un código válido de 6 dígitos';
-    return;
-  }
-
-  this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
-    next: (res: any) => {
-      localStorage.setItem('token', res.token);
-      this.mostrarModalOTP = false;
-      this.router.navigate(['/admin']);
-    },
-    error: (err) => {
-      this.error = 'Código 2FA incorrecto o expirado';
-    }
-  });
-}
-qrCodeUrl: string = '';
-
-enable2FA(username: string) {
-  this.authService.enable2FA(username).subscribe({
-    next: (res: any) => { // 👈 aquí agregas "any"
-      console.log('Respuesta del backend:', res);
-      this.qrCodeUrl = res.otpAuthUrl;
-      this.mostrarModalOTP = true;
-    },
-    error: (err) => {
-      console.error(err);
-      Swal.fire('Error', 'No se pudo activar el 2FA', 'error');
-    }
-  });
   }
 }

@@ -6,11 +6,11 @@ import { QuillModule } from "ngx-quill"
 interface ImagePreview {
   file?: File
   url: string
-  isExisting?: boolean // Para distinguir entre imágenes existentes y nuevas
+  isExisting?: boolean
 }
 
 interface Producto {
-  id?: number
+  id?: string  // ⭐ CAMBIO: ID es string
   producto: string
   descripcion: string
   version: string
@@ -57,7 +57,6 @@ export class EditarProductosModalComponent implements OnInit {
   cargarDatosProducto() {
     if (!this.producto) return
 
-    // Cargar datos del formulario
     this.formData = {
       producto: this.producto.producto || "",
       descripcion: this.producto.descripcion || "",
@@ -65,23 +64,14 @@ export class EditarProductosModalComponent implements OnInit {
       caracteristicas: this.producto.caracteristicas || "",
     }
 
-    // Cargar imagen de la caja si existe
     if (this.producto.imagenCaja) {
-      this.imagenCaja = {
-        url: this.producto.imagenCaja,
-        isExisting: true,
-      }
+      this.imagenCaja = { url: this.producto.imagenCaja, isExisting: true }
     }
 
-    // Cargar imagen de la portada si existe
     if (this.producto.imagenPortada) {
-      this.imagenPortada = {
-        url: this.producto.imagenPortada,
-        isExisting: true,
-      }
+      this.imagenPortada = { url: this.producto.imagenPortada, isExisting: true }
     }
 
-    // Cargar fotos adicionales si existen
     if (this.producto.fotosAdicionales && this.producto.fotosAdicionales.length > 0) {
       this.fotosAdicionales = this.producto.fotosAdicionales.map((url) => ({
         url: url,
@@ -92,42 +82,30 @@ export class EditarProductosModalComponent implements OnInit {
 
   triggerFileInput(tipo: "caja" | "portada" | "fotos") {
     let fileInput: HTMLInputElement | null = null
-
-    if (tipo === "caja") {
-      fileInput = document.querySelector("#fileInputCajaEdit") as HTMLInputElement
-    } else if (tipo === "portada") {
-      fileInput = document.querySelector("#fileInputPortadaEdit") as HTMLInputElement
-    } else {
-      fileInput = document.querySelector("#fileInputFotosEdit") as HTMLInputElement
-    }
-
+    if (tipo === "caja") fileInput = document.querySelector("#fileInputCajaEdit") as HTMLInputElement
+    else if (tipo === "portada") fileInput = document.querySelector("#fileInputPortadaEdit") as HTMLInputElement
+    else fileInput = document.querySelector("#fileInputFotosEdit") as HTMLInputElement
+    
     fileInput?.click()
   }
 
   onFileSelected(event: Event, tipo: "caja" | "portada" | "fotos") {
     const input = event.target as HTMLInputElement
     const files = input.files
-
     if (!files || files.length === 0) return
 
     if (tipo === "caja" || tipo === "portada") {
       const file = files[0]
       const reader = new FileReader()
-
       reader.onload = (e) => {
         const imagePreview: ImagePreview = {
           file: file,
           url: e.target?.result as string,
           isExisting: false,
         }
-
-        if (tipo === "caja") {
-          this.imagenCaja = imagePreview
-        } else {
-          this.imagenPortada = imagePreview
-        }
+        if (tipo === "caja") this.imagenCaja = imagePreview
+        else this.imagenPortada = imagePreview
       }
-
       reader.readAsDataURL(file)
     } else if (tipo === "fotos") {
       const remainingSlots = 10 - this.fotosAdicionales.length
@@ -135,38 +113,29 @@ export class EditarProductosModalComponent implements OnInit {
 
       filesToProcess.forEach((file) => {
         const reader = new FileReader()
-
         reader.onload = (e) => {
           const imagePreview: ImagePreview = {
             file: file,
             url: e.target?.result as string,
             isExisting: false,
           }
-
           this.fotosAdicionales.push(imagePreview)
         }
-
         reader.readAsDataURL(file)
       })
     }
-
-    // Reset input value
     input.value = ""
   }
 
   removeImage(tipo: "caja" | "portada") {
-    if (tipo === "caja") {
-      this.imagenCaja = null
-    } else {
-      this.imagenPortada = null
-    }
+    if (tipo === "caja") this.imagenCaja = null
+    else this.imagenPortada = null
   }
 
   removeFotoAdicional(index: number) {
     this.fotosAdicionales.splice(index, 1)
   }
 
-  // Función para mostrar imagen completa
   verImagenCompleta(imagenUrl: string) {
     this.imagenCompleta = imagenUrl
     this.mostrarImagenCompleta = true
@@ -179,13 +148,12 @@ export class EditarProductosModalComponent implements OnInit {
 
   onActualizar() {
     const productoActualizado = {
-      id: this.producto?.id,
+      id: this.producto?.id, // String
       ...this.formData,
       imagenCaja: this.imagenCaja,
       imagenPortada: this.imagenPortada,
       fotosAdicionales: this.fotosAdicionales,
     }
-
     this.actualizarProducto.emit(productoActualizado)
   }
 

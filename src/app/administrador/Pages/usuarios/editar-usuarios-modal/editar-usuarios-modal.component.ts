@@ -12,12 +12,13 @@ import { UsuariosService } from '../../../../service/admin/usuario/usuarios.serv
   styleUrl: './editar-usuarios-modal.component.css'
 })
 export class EditarUsuariosModalComponent implements OnInit {
-  // Recibe el usuario a editar
+  
+  // Recibe el objeto usuario desde el padre (el ID viene como string encriptado)
   @Input() usuario: any = {};
   
-  // Copia local del usuario para evitar modificar el original
+  // Modelo local para el formulario
   usuarioEditado: any = {
-    id: '',
+    id: '', // Se inicializa como string para soportar el hash
     nombres: '',
     apellidos: '',
     email: ''
@@ -29,43 +30,45 @@ export class EditarUsuariosModalComponent implements OnInit {
   constructor(private usuariosService: UsuariosService) {}
 
   ngOnInit(): void {
-    // Crear una copia profunda del usuario recibido
-    this.usuarioEditado = {
-      id: this.usuario.id,
-      nombres: this.usuario.nombres || '',
-      apellidos: this.usuario.apellidos || '',
-      email: this.usuario.email || ''
-    };
-    
-    console.log('Usuario original:', this.usuario);
-    console.log('Usuario editado (copia):', this.usuarioEditado);
+    // Verificamos que llegue data para evitar errores de undefined
+    if (this.usuario) {
+      this.usuarioEditado = {
+        id: this.usuario.id, // Copia el ID encriptado (ej: "abc-123")
+        nombres: this.usuario.nombres || '',
+        apellidos: this.usuario.apellidos || '',
+        email: this.usuario.email || ''
+      };
+    }
+    console.log('Editando usuario (ID Encriptado):', this.usuarioEditado.id);
   }
 
-  // Método para cerrar el modal
   cerrarModal(): void {
     this.cerrar.emit();
   }
 
-  // Método para guardar los cambios en el usuario
   guardarUsuario(): void {
-    // Validar que los campos no estén vacíos
-    if (!this.usuarioEditado.nombres.trim() || !this.usuarioEditado.apellidos.trim() || !this.usuarioEditado.email.trim()) {
+    // 1. Validaciones
+    if (!this.usuarioEditado.nombres.trim() || 
+        !this.usuarioEditado.apellidos.trim() || 
+        !this.usuarioEditado.email.trim()) {
       alert('Todos los campos son obligatorios.');
       return;
     }
 
-    console.log('Datos del usuario a actualizar:', this.usuarioEditado); // Debug
-    
-    // Llamada al servicio para actualizar el usuario
+    // 2. Enviar al servicio
+    // El servicio espera el objeto con el 'id' encriptado dentro del body
     this.usuariosService.actualizarUsuario(this.usuarioEditado).subscribe({
-      next: (res) => {
-        console.log('Usuario actualizado exitosamente:', res);
-        this.actualizado.emit(); // Refrescar lista en el padre
+      next: () => {
+        // No mostramos alert intrusivo si no es necesario, o usa un Toast aquí
+        console.log('Usuario actualizado correctamente');
+        this.actualizado.emit(); // Avisar al padre para recargar la tabla
         this.cerrarModal();
       },
       error: (err) => {
-        console.error('Error al actualizar usuario:', err);
-        alert('Error al actualizar usuario: ' + (err.error?.message || err.message));
+        console.error('Error al actualizar:', err);
+        // Muestra mensaje de error del backend si existe
+        const msg = err.error?.message || 'Error desconocido al actualizar';
+        alert(`Error: ${msg}`);
       }
     });
   }

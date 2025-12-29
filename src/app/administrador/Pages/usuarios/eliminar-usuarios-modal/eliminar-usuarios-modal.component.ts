@@ -10,24 +10,24 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '
   styleUrl: './eliminar-usuarios-modal.component.css'
 })
 export class EliminarUsuariosModalComponent {
-  // ID del usuario que se desea eliminar
-  @Input() usuarioId: number | null = null;
+  
+  // CAMBIO: El ID ahora es string porque viene encriptado
+  @Input() usuarioId: string | null = null;
 
-  // Evento que se emite cuando se confirma la eliminación
-  @Output() confirmar = new EventEmitter<number>();
+  // CAMBIO: El evento debe emitir un string
+  @Output() confirmar = new EventEmitter<string>();
 
-  // Evento que se emite cuando se cancela la acción
   @Output() cancelar = new EventEmitter<void>();
 
-  // Método para confirmar la eliminación
   confirmarEliminacion(): void {
-    console.log('ID a eliminar:', this.usuarioId); // Debug: asegúrate que no sea undefined
-    if (this.usuarioId !== null) {
+    console.log('ID a eliminar (encriptado):', this.usuarioId);
+    
+    // Verificamos que no sea null ni undefined
+    if (this.usuarioId) {
       this.confirmar.emit(this.usuarioId);
     }
   }
 
-  // Método para cancelar la eliminación
   cancelarEliminacion(): void {
     this.cancelar.emit();
   }

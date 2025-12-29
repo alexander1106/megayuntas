@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 
+// Asegúrate de que las rutas sean correctas según tu estructura
 import { EliminarUsuariosModalComponent } from './eliminar-usuarios-modal/eliminar-usuarios-modal.component';
-import { UsuariosService } from '../../../service/admin/usuario/usuarios.service';
+import { UsuariosService } from '../../service/admin/usuario/usuario.service'; // Ajusta la ruta si es necesario
 import { EditarUsuariosModalComponent } from './editar-usuarios-modal/editar-usuarios-modal.component';
 
-
-
+// CAMBIO 1: La interfaz ahora define id como string
 interface Usuario {
-  id: number;
+  id: string; // <-- Antes number, ahora string (hash encriptado)
   nombres: string;
   apellidos: string;
   email: string;
-  idRol: number;
+  idRol: number | string; // Puede ser número al llegar, string al mapear
 }
 
 @Component({
@@ -29,18 +29,23 @@ interface Usuario {
 })
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
-  // Mapeo de roles para mostrar nombres legibles
+
   readonly rolesMap: { [key: string]: string } = {
     '3': 'Usuario',
-    // Puedes agregar más roles aquí si es necesario
+    '2': 'Administrador', // Ejemplo
+    '1': 'SuperAdmin'     // Ejemplo
   };
+
   mostrarModalAgregar = false;
   mostrarModalEditar = false;
   mostrarModalEliminar = false;
+  
   usuarioSeleccionado: Usuario | null = null;
-  usuarioIdAEliminar: number | null = null;
-  idRol = "Usuario"; // Asignar el perfil por defecto
+  
+  // CAMBIO 2: La variable para eliminación ahora es string
+  usuarioIdAEliminar: string | null = null; 
 
+  idRol = "Usuario"; 
 
   constructor(private usuariosService: UsuariosService) {}
 
@@ -51,20 +56,21 @@ export class UsuariosComponent implements OnInit {
   private cargarUsuarios(): void {
     this.usuariosService.getUsuarios().subscribe({
       next: res => {
-        console.log('Datos recibidos del servicio:', res); // Debug
-        // Mapear idRol a nombre legible si corresponde
-        this.usuarios = res.map((usuario: Usuario) => ({
+        console.log('Datos recibidos:', res);
+        // Mapeamos los datos asegurando que la estructura coincida
+        this.usuarios = res.map((usuario: any) => ({
           ...usuario,
+          // Si el backend envía "idUsuario", lo asignamos a "id", si envía "id", se queda igual
+          id: usuario.id || usuario.idUsuario, 
           idRol: this.rolesMap[usuario.idRol] || usuario.idRol
         }));
-        console.log('Usuarios procesados:', this.usuarios); // Debug
       },
       error: err => console.error('Error al cargar usuarios', err)
     });
   }
 
-  // TrackBy function para mejorar el rendimiento
-  trackByUsuarioId(index: number, usuario: Usuario): number {
+  // CAMBIO 3: TrackBy ahora retorna string
+  trackByUsuarioId(index: number, usuario: Usuario): string {
     return usuario.id;
   }
 
@@ -79,7 +85,7 @@ export class UsuariosComponent implements OnInit {
 
   // --- EDITAR ---
   abrirModalEditar(usuario: Usuario): void {
-    this.usuarioSeleccionado = { ...usuario }; // clonamos para no mutar directo
+    this.usuarioSeleccionado = { ...usuario };
     this.mostrarModalEditar = true;
   }
   cerrarModalEditar(): void {
@@ -89,29 +95,34 @@ export class UsuariosComponent implements OnInit {
   }
 
   // --- ELIMINAR ---
-  abrirModalEliminar(usuarioId: number): void {
+  // CAMBIO 4: Recibe string en lugar de number
+  abrirModalEliminar(usuarioId: string): void {
     this.usuarioIdAEliminar = usuarioId;
     this.mostrarModalEliminar = true;
   }
+
   cerrarModalEliminar(): void {
     this.mostrarModalEliminar = false;
     this.usuarioIdAEliminar = null;
   }
-  eliminarUsuario(id: number): void {
-    if (id == null || id === undefined) {
-    console.error('ID inválido para eliminación');
-    return;
-  }
 
-  this.usuariosService.eliminarUsuario(id).subscribe({
-    next: () => {
-      console.log(`Usuario con ID ${id} eliminado`);
-      this.cerrarModalEliminar();
-      this.cargarUsuarios();
-    },
-    error: (err) => {
-      console.error('Error al eliminar Usuario:', err);
+  // CAMBIO 5: Lógica de eliminación adaptada a string
+  eliminarUsuario(id: string): void {
+    if (!id) {
+      console.error('ID inválido para eliminación');
+      return;
     }
-  });
-}
+
+    this.usuariosService.eliminarUsuario(id).subscribe({
+      next: () => {
+        console.log(`Usuario con ID ${id} eliminado`);
+        this.cerrarModalEliminar();
+        this.cargarUsuarios();
+      },
+      error: (err) => {
+        console.error('Error al eliminar Usuario:', err);
+        // Aquí podrías agregar una alerta visual (Toaster/SweetAlert)
+      }
+    });
+  }
 }

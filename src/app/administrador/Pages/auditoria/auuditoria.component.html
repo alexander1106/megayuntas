@@ -1,0 +1,79 @@
+<div class="container-fluid p-4">
+    <h2 class="mb-4">Registro de Auditoría</h2>
+  
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar por Usuario..." 
+                   [(ngModel)]="busquedaUsuario" (keyup.enter)="buscar()">
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar por Acción (ej: LOGIN)..." 
+                   [(ngModel)]="busquedaAccion" (keyup.enter)="buscar()">
+          </div>
+          <div class="col-md-4 d-flex gap-2">
+            <button class="btn btn-primary flex-grow-1" (click)="buscar()" [disabled]="cargando">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+            <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">
+              <i class="fa fa-eraser"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-hover align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+            <th>IP</th>
+            <th>Método</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let audit of auditorias">
+            <td><small class="text-muted">#{{ audit.id }}</small></td>
+            <td class="fw-bold">{{ audit.usuario }}</td>
+            <td>
+              <span class="badge rounded-pill" 
+                    [ngClass]="{
+                      'bg-success': audit.accion === 'LOGIN',
+                      'bg-danger': audit.accion === 'ELIMINAR_USUARIO',
+                      'bg-warning text-dark': audit.accion === 'ACTUALIZAR_USUARIO',
+                      'bg-primary': audit.accion === 'CREAR_USUARIO',
+                      'bg-secondary': !['LOGIN','ELIMINAR_USUARIO','ACTUALIZAR_USUARIO','CREAR_USUARIO'].includes(audit.accion)
+                    }">
+                {{ audit.accion }}
+              </span>
+            </td>
+            <td>{{ audit.descripcion }}</td>
+            <td>{{ audit.fecha | date:'medium' }}</td>
+            <td><small>{{ audit.ipAddress }}</small></td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ audit.metodoHttp }}</span> 
+              <small class="ms-1 text-muted">{{ audit.endpoint }}</small>
+            </td>
+          </tr>
+          
+          <tr *ngIf="auditorias.length === 0 && !cargando">
+            <td colspan="7" class="text-center py-4 text-muted">
+              No se encontraron registros de auditoría.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div *ngIf="cargando" class="text-center mt-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  </div>

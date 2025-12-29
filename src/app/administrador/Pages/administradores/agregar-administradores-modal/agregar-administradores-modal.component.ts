@@ -13,9 +13,8 @@ import { AdministradorService } from '../../../../service/admin/administrador/ad
 })
 export class AgregarAdministradoresModalComponent {
   @Output() cerrar = new EventEmitter<void>();
-  @Output() creado = new EventEmitter<void>(); // opcional, para refrescar la lista en el padre
+  @Output() creado = new EventEmitter<void>();
 
-  // Modelo del nuevo administrador
   administradorNuevo = {
     nombres: '',
     apellidos: '',
@@ -29,24 +28,21 @@ export class AgregarAdministradoresModalComponent {
 
   constructor(private administradorService: AdministradorService) {}
 
-  
-
-  // Cerrar modal sin guardar
   cerrarModal(): void {
     this.cerrar.emit();
   }
 
-  // Guardar administrador
   guardarAdministrador(): void {
-      if (this.confirmPassword !== this.administradorNuevo.password) {
-    alert('Las contraseñas no coinciden');
-    return;
-  }
+    if (this.confirmPassword !== this.administradorNuevo.password) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
   
     this.administradorService.crearAdministrador(this.administradorNuevo).subscribe({
       next: (res) => {
-        console.log('Administrador creado:', res);
-        this.creado.emit(); // si deseas que el padre refresque la lista
+        // ⭐ La respuesta contiene el ID ENCRIPTADO: { idAdministrador: "Xy9-zRq2" }
+        console.log('Administrador creado con ID encriptado:', res.idAdministrador);
+        this.creado.emit();
         this.cerrarModal();
       },
       error: (err) => {

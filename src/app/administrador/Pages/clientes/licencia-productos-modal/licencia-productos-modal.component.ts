@@ -12,9 +12,9 @@ export interface Licencia {
   licActiva: string;
 }
 
-// Extendemos tu interfaz Cliente existente
+// ⭐ Interfaz actualizada para soportar ID string (encriptado)
 export interface ClienteConLicencias {
-  id: number;
+  id: string; // Cambiado de number a string
   nombreEmpresa: string;
   ruc: string;
   telefono: string;
@@ -23,7 +23,6 @@ export interface ClienteConLicencias {
   mostrarEnWeb: string;
   licencias?: Licencia[];
 }
-
 
 @Component({
   selector: 'app-licencia-productos-modal',
@@ -42,13 +41,13 @@ export class LicenciaModalComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // Si el cliente no tiene licencias, inicializar con array vacío
+    // Inicialización segura de licencias
     if (this.cliente && !this.cliente.licencias) {
       this.cliente.licencias = [];
     }
   }
 
-  // Getter para verificar si el cliente existe
+  // Verificar si hay datos de cliente cargados
   get clienteValido(): boolean {
     return this.cliente !== null && this.cliente !== undefined;
   }
@@ -57,7 +56,6 @@ export class LicenciaModalComponent implements OnInit {
     return this.cliente?.licencias || [];
   }
 
-  // TrackBy function para mejorar performance en *ngFor
   trackByLicencia(index: number, licencia: Licencia): string {
     return licencia.nroSerieLicencia;
   }
@@ -74,14 +72,14 @@ export class LicenciaModalComponent implements OnInit {
 
   agregarLicencia(): void {
     if (this.cliente) {
-      // Agregar una licencia de ejemplo o abrir un formulario
+      // Ejemplo de creación de licencia localmente
       const nuevaLicencia: Licencia = {
         sistema: 'NUEVO_SISTEMA',
         fechInstalacion: new Date().toLocaleDateString('es-PE'),
         fechActualizacion: new Date().toLocaleDateString('es-PE'),
         version: '1.0.0',
         usuarioLic: 1,
-        nroSerieLicencia: 'NUEVA-LICENCIA-' + Date.now(),
+        nroSerieLicencia: 'GEN-' + Date.now().toString().slice(-6), // Generación simple de serie
         status: 'Vigente',
         licActiva: 'Activa'
       };
@@ -94,9 +92,8 @@ export class LicenciaModalComponent implements OnInit {
   }
 
   editarLicencia(licencia: Licencia): void {
-    // Lógica para editar licencia
     console.log('Editar licencia:', licencia);
-    // Aquí podrías abrir otro modal o hacer la edición inline
+    // Aquí puedes implementar lógica para abrir un sub-modal o editar en línea
   }
 
   eliminarLicencia(licencia: Licencia): void {
@@ -110,8 +107,7 @@ export class LicenciaModalComponent implements OnInit {
   }
 
   descargarLicencia(licencia: Licencia): void {
-    // Lógica para descargar licencia
-    console.log('Descargar licencia:', licencia);
-    // Aquí implementarías la descarga del archivo de licencia
+    console.log('Descargando archivo para licencia:', licencia.nroSerieLicencia);
+    // Aquí conectarías con tu servicio para descargar el archivo real
   }
 }

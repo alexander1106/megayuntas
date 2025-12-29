@@ -13,9 +13,8 @@ import { AdministradorService } from '../../../../service/admin/administrador/ad
 export class EditarAdministradoresModalComponent implements OnInit {
   @Input() administrador: any = {};
   
-  // Copia local del administrador para evitar modificar el original
   administradorEditado: any = {
-    id: '',
+    id: '',  //  Este será el ID ENCRIPTADO
     nombres: '',
     apellidos: '',
     username: '',
@@ -29,15 +28,14 @@ export class EditarAdministradoresModalComponent implements OnInit {
   @Output() cerrar = new EventEmitter<void>();
   @Output() actualizado = new EventEmitter<void>();
 
-  // Variable para controlar si se está cambiando la contraseña
   cambiarPassword = false;
 
   constructor(private administradorService: AdministradorService) {}
 
   ngOnInit(): void {
-    // Crear una copia profunda del administrador recibido
+    // ⭐ El ID que recibimos ya está encriptado desde el backend
     this.administradorEditado = {
-      id: this.administrador.id,
+      id: this.administrador.id,  // ID encriptado
       nombres: this.administrador.nombres || '',
       apellidos: this.administrador.apellidos || '',
       username: this.administrador.username || '',
@@ -48,18 +46,14 @@ export class EditarAdministradoresModalComponent implements OnInit {
       confirmarPassword: ''
     };
     
-    console.log('Administrador original:', this.administrador);
-    console.log('Administrador editado (copia):', this.administradorEditado);
+    console.log('Admin con ID encriptado:', this.administrador.id);
   }
 
-  // Método para cerrar el modal
   cerrarModal(): void {
     this.cerrar.emit();
   }
 
-  // Validación de campos
   validarCampos(): boolean {
-    // Validar campos obligatorios
     if (!this.administradorEditado.nombres.trim() || 
         !this.administradorEditado.apellidos.trim() || 
         !this.administradorEditado.username.trim() || 
@@ -68,14 +62,12 @@ export class EditarAdministradoresModalComponent implements OnInit {
       return false;
     }
 
-    // Validar email básico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.administradorEditado.email)) {
       alert('El formato del email no es válido.');
       return false;
     }
 
-    // Validar contraseñas si se está cambiando
     if (this.cambiarPassword) {
       if (!this.administradorEditado.passwordActual.trim()) {
         alert('Debe ingresar la contraseña actual para cambiarla.');
@@ -101,28 +93,26 @@ export class EditarAdministradoresModalComponent implements OnInit {
     return true;
   }
 
-  // Método para guardar los cambios en el administrador
   guardarAdministrador(): void {
     if (!this.validarCampos()) {
       return;
     }
 
-    // Si no se está cambiando la contraseña, limpiar los campos
     if (!this.cambiarPassword) {
       this.administradorEditado.passwordActual = '';
       this.administradorEditado.nuevaPassword = '';
       this.administradorEditado.confirmarPassword = '';
     }
 
-    console.log('Datos del administrador a actualizar:', this.administradorEditado);
+    console.log('Guardando admin con ID encriptado:', this.administradorEditado.id);
 
     try {
-      // Llamada al servicio para actualizar el administrador
+      // ⭐ El ID ya está encriptado, se envía tal cual
       this.administradorService.actualizarAdministrador(this.administradorEditado).subscribe({
         next: (res) => {
           console.log('Administrador actualizado exitosamente:', res);
           alert('Administrador actualizado correctamente.');
-          this.actualizado.emit(); // Refrescar lista en el padre
+          this.actualizado.emit();
           this.cerrarModal();
         },
         error: (err) => {

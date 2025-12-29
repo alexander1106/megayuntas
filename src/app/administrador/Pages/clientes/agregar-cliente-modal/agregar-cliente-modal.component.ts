@@ -1,6 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClientesService } from '../../../../service/admin/clientes/clientes.service'; // Ajusta la ruta
 
 @Component({
   selector: 'app-agregar-cliente-modal',
@@ -12,44 +13,71 @@ import { FormsModule } from '@angular/forms';
 export class AgregarClienteModalComponent {
   @Output() cerrar = new EventEmitter<void>();
   
-  // Modelo para el formulario
+  // Modelo del formulario
   clienteNuevo = {
     empresa: '',
-    opinion: '',
     ruc: '',
     telefono: '',
     contacto: '',
+    grupo: '',
+    mostrarWeb: false,
+    // Campos adicionales si tu backend los soporta:
+    opinion: '',
     direccion: '',
     localidad: '',
-    nombreComercial: '',
-    grupo: '',
-    mostrarWeb: false
+    nombreComercial: ''
   };
 
-  // Método para cerrar el modal
+  constructor(private clientesService: ClientesService) {}
+
   cerrarModal(): void {
     this.cerrar.emit();
   }
 
-  // Método para guardar el cliente
   guardarCliente(): void {
-    console.log('Cliente guardado:', this.clienteNuevo);
-    // Aquí implementarías la lógica para guardar el cliente
-    this.cerrarModal();
+    // Validar campos requeridos básicos
+    if (!this.clienteNuevo.empresa || !this.clienteNuevo.ruc) {
+      alert('Nombre de empresa y RUC son obligatorios');
+      return;
+    }
+
+    // Mapeo al DTO que espera el servicio (Interfaz Cliente)
+    const nuevoClienteDTO = {
+      nombreEmpresa: this.clienteNuevo.empresa,
+      ruc: this.clienteNuevo.ruc,
+      telefono: this.clienteNuevo.telefono,
+      contacto: this.clienteNuevo.contacto,
+      grupo: this.clienteNuevo.grupo,
+      mostrarEnWeb: this.clienteNuevo.mostrarWeb,
+      // Si tu backend acepta los otros campos, agrégalos aquí:
+      // direccion: this.clienteNuevo.direccion,
+      // ...
+    };
+
+    console.log('Enviando cliente:', nuevoClienteDTO);
+
+    this.clientesService.crearCliente(nuevoClienteDTO).subscribe({
+      next: (res) => {
+        console.log('Cliente creado:', res);
+        this.cerrarModal();
+      },
+      error: (err) => {
+        console.error('Error al crear cliente:', err);
+        alert('Error al guardar el cliente');
+      }
+    });
   }
 
-  // Método para consultar RUC
   consultarRUC(): void {
     console.log('Consultando RUC:', this.clienteNuevo.ruc);
-    // Implementar lógica para consultar RUC
+    // Aquí puedes integrar un servicio de consulta de RUC externa si lo tienes
   }
 
-  // Método para subir imagen
   subirImagen(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       console.log('Imagen seleccionada:', input.files[0].name);
-      // Implementar lógica para procesar la imagen
+      // Lógica de subida de imagen
     }
   }
 }
