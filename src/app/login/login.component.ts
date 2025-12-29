@@ -2,19 +2,9 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../service/auth/auth.service'; // Ajusta la ruta si es necesario
+import { AuthService } from '../../service/auth/auth.service'; // Ajusta la ruta a tu servicio
 import Swal from 'sweetalert2';
 import { QRCodeModule } from 'angularx-qrcode';
-
-// Interfaces locales para tipado
-interface LoginResponse {
-  data?: {
-    token?: string;
-    require2FA?: boolean;
-    username?: string;
-  };
-  message?: string;
-}
 
 @Component({
   selector: 'app-login',
@@ -25,79 +15,97 @@ interface LoginResponse {
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  isForgotPasswordMode = false;
+  // Estados de vista
   isLoginMode = true;
+  isForgotPasswordMode = false;
   isLoading = false;
   showPassword = false;
   mostrarModalOTP = false;
-
-  // Datos de formularios
-  loginData = {
-    user: '',
-    password: ''
-  };
-
-  registerData = {
-    nombres: '',
-    apellidos: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    email: '',
-    suscripcion: 1, // ID numérico por defecto (Backend lo espera así)
-    idRol: 1        // ID numérico por defecto
-  };
-
-  // Variables para 2FA
+  
+  // Variables 2FA
   username = '';
   tokenTemporal = '';
   qrCodeUrl = '';
   error = '';
 
+  // Modelos de datos
+  loginData = { 
+    email: '', 
+    password: '' 
+  };
+
+  registerData = {
+    dni: '',
+    nombres: '',
+    apellidos: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    suscripcion: 1,
+    idRol: 1
+  };
+
   constructor(
-    private authService: AuthService,
+    private authService: AuthService, 
     private router: Router
   ) {}
 
-  // --- LOGIN ---
+  // ==========================================================
+  // LÓGICA DE LOGIN
+  // ==========================================================
   onLogin(form: NgForm) {
     if (form.invalid) return;
     
     this.isLoading = true;
-    this.authService.login(this.loginData.user, this.loginData.password).subscribe({
-      next: (response: any) => { // Puedes usar LoginResponse si tu servicio lo tipa
-        console.log('🔹 Respuesta del servidor:', response);
+    this.error = '';
+
+    this.authService.login(this.loginData.email, this.loginData.password).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        
+        // 1. Verificar errores lógicos del backend
+        if (response?.status === 'error') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de acceso',
+            text: response.message || 'Error desconocido',
+          });
+          return;
+        }
+
         const data = response?.data;
 
-        if (!data) {
-          this.handleError('Respuesta inválida del servidor');
+        // 2. Verificar si requiere 2FA
+        if (data?.require2FA) {
+          this.username = data.username;
+          this.enable2FA(data.username);
+          Swal.fire({
+            icon: 'info',
+            title: 'Seguridad',
+            text: 'Se requiere verificación de dos pasos',
+            timer: 2000,
+            showConfirmButton: false
+          });
           return;
         }
 
-        // Caso 1: Requiere 2FA
-        if (data.require2FA) {
-          console.log('🟡 Requiere 2FA');
-          this.username = data.username || this.loginData.user;
-          this.enable2FA(this.username);
-          this.isLoading = false;
-          return;
-        }
-
-        // Caso 2: Login Exitoso Directo
-        if (data.token) {
-          this.procesarLoginExitoso(data.token);
-        } else {
-          this.handleError('No se recibió el token de acceso');
+        // 3. Login Exitoso Directo
+        if (data?.token) {
+          localStorage.setItem('token', data.token);
+          this.redirigirAlAdmin();
         }
       },
       error: (err) => {
-        console.error('❌ Error login:', err);
-        this.handleError('Credenciales incorrectas o error de conexión');
+        this.isLoading = false;
+        const msg = err?.error?.message || 'Credenciales incorrectas o servidor no disponible';
+        Swal.fire({ icon: 'error', title: 'Error', text: msg });
       }
     });
   }
 
-  // --- REGISTRO ---
+  // ==========================================================
+  // LÓGICA DE REGISTRO
+  // ==========================================================
   onRegister() {
     if (this.registerData.password !== this.registerData.confirmPassword) {
       this.error = 'Las contraseñas no coinciden';
@@ -106,76 +114,89 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.authService.registerUser(this.registerData).subscribe({
-      next: (res) => {
-        console.log('✅ Usuario registrado:', res);
+      next: () => {
         this.isLoading = false;
         Swal.fire({
           icon: 'success',
-          title: 'Registro exitoso',
-          text: 'Tu cuenta ha sido creada. Por favor inicia sesión.',
+          title: '¡Registro exitoso!',
+          text: 'Tu cuenta ha sido creada. Por favor inicia sesión.'
         });
-        this.isLoginMode = true;
+        this.isLoginMode = true; // Volver al login
       },
       error: (err) => {
-        console.error('❌ Error registro:', err);
         this.isLoading = false;
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al registrar',
-          text: err.error?.message || 'No se pudo crear el usuario.'
-        });
+        console.error(err);
+        Swal.fire('Error', 'No se pudo registrar el usuario. Verifique los datos.', 'error');
+      },
+    });
+  }
+
+  // --- BÚSQUEDA RENIEC (DNI) ---
+  buscarDNI() {
+    const dni = this.registerData.dni.trim();
+    if (dni.length !== 8) {
+      Swal.fire('Atención', 'El DNI debe tener 8 dígitos', 'warning');
+      return;
+    }
+
+    this.isLoading = true;
+    // Asegúrate de que tu AuthService tenga este método implementado
+    this.authService.getUserByDNI(dni).subscribe({
+      next: (res: any) => {
+        this.registerData.nombres = res.nombres || res.names || '';
+        this.registerData.apellidos = res.apellidos || res.surnames || '';
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        Swal.fire('Aviso', 'No se encontraron datos para este DNI', 'info');
+        // Limpiamos nombres para que el usuario los ingrese manual si falla
+        this.registerData.nombres = '';
+        this.registerData.apellidos = '';
       }
     });
   }
 
-  // --- 2FA LOGIC ---
+  onDNIChange() {
+    if (this.registerData.dni.length === 8) {
+      this.buscarDNI();
+    }
+  }
+
+  // ==========================================================
+  // LÓGICA 2FA
+  // ==========================================================
   enable2FA(username: string) {
     this.authService.enable2FA(username).subscribe({
       next: (res: any) => {
         this.qrCodeUrl = res.otpAuthUrl;
         this.mostrarModalOTP = true;
       },
-      error: (err: any) => {
-        console.error('Error activando 2FA:', err);
-        this.handleError('No se pudo iniciar el proceso de doble factor');
-      }
+      error: () => Swal.fire('Error', 'No se pudo generar el código QR', 'error')
     });
   }
 
   verificarCodigo2FA() {
     if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
-      this.error = 'El código debe tener 6 dígitos';
+      this.error = 'Ingrese un código de 6 dígitos';
       return;
     }
 
     this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
       next: (res: any) => {
+        localStorage.setItem('token', res.token);
         this.mostrarModalOTP = false;
-        this.procesarLoginExitoso(res.token);
+        this.redirigirAlAdmin();
       },
-      error: (err: any) => {
+      error: () => {
         this.error = 'Código incorrecto o expirado';
       }
     });
   }
 
-  // --- UTILIDADES ---
-  private procesarLoginExitoso(token: string) {
-    localStorage.setItem('token', token);
-    console.log('✅ Login exitoso');
-    this.router.navigate(['/admin']);
-    this.isLoading = false;
-  }
-
-  private handleError(mensaje: string) {
-    this.isLoading = false;
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: mensaje
-    });
-  }
-
+  // ==========================================================
+  // UTILIDADES UI
+  // ==========================================================
   toggleMode() {
     this.isLoginMode = !this.isLoginMode;
     this.error = '';
@@ -183,5 +204,17 @@ export class LoginComponent {
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+  }
+
+  private redirigirAlAdmin() {
+    Swal.fire({
+      icon: 'success',
+      title: '¡Bienvenido!',
+      text: 'Acceso correcto',
+      timer: 1500,
+      showConfirmButton: false
+    }).then(() => {
+      this.router.navigate(['/admin']);
+    });
   }
 }

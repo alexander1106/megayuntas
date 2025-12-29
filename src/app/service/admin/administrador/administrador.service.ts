@@ -1,56 +1,71 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environment'; // Ajusta la ruta a tu environment
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdministradorService {
-  private apiUrl = 'http://localhost:8080/api/administradores';
+
+  private apiUrl = `${environment.apiUrl}/administradores`;
 
   constructor(private http: HttpClient) {}
 
-  // Crear administrador
-  // Respuesta: { idAdministrador: "Xy9-zRq2" } (encriptado)
+  /** Genera los headers con el token para Auditoría */
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token') || '';
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  // ============================================================================
+  // LISTAR ADMINISTRADORES
+  // ============================================================================
+  getAdministradores(): Observable<any> {
+    return this.http.get(this.apiUrl, { headers: this.getAuthHeaders() });
+  }
+
+  // ============================================================================
+  // CREAR ADMINISTRADOR
+  // ============================================================================
   crearAdministrador(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, null, {
-      params: {
-        nombres: data.nombres,
-        apellidos: data.apellidos,
-        username: data.username,
-        password: data.password,
-        email: data.email,
-        rolNuevoAdministrador: data.rolNuevoAdministrador
-      }
-    });
+    // Se envía como JSON en el body
+    return this.http.post(this.apiUrl, data, { headers: this.getAuthHeaders() });
   }
 
-  // Listar administradores
-  getAdministradores(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`);
+  // ============================================================================
+  // ACTUALIZAR ADMINISTRADOR
+  // ============================================================================
+  actualizarAdministrador(adm: any): Observable<any> {
+    // Validación básica de contraseñas (opcional, idealmente va en el componente)
+    if (adm.passwordActual) {
+       if (!adm.nuevaPassword || !adm.confirmarPassword) {
+          throw new Error('Debe completar todos los campos de contraseña');
+       }
+       if (adm.nuevaPassword !== adm.confirmarPassword) {
+          throw new Error('La nueva contraseña y su confirmación no coinciden');
+       }
+    }
+
+    // El backend espera el objeto completo en el body (incluyendo ID encriptado)
+    return this.http.put(
+      this.apiUrl, 
+      adm, 
+      { headers: this.getAuthHeaders() }
+    );
   }
 
-  // Actualizar administrador
-  // idEncriptado: "Xy9-zRq2"
-  actualizarAdministrador(admin: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}`, null, {
-      params: {
-        idEncriptado: admin.id, // ⭐ Aquí va el ID ENCRIPTADO
-        nombres: admin.nombres,
-        apellidos: admin.apellidos,
-        username: admin.username,
-        email: admin.email,
-        rol: admin.rol,
-        passwordActual: admin.passwordActual || '',
-        nuevaPassword: admin.nuevaPassword || '',
-        confirmarPassword: admin.confirmarPassword || ''
-      }
-    });
-  }
-
-  // Eliminar administrador
-  // idEncriptado: "Xy9-zRq2"
+  // ============================================================================
+  // ELIMINAR ADMINISTRADOR
+  // ============================================================================
   eliminarAdministrador(idEncriptado: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/eliminar/${idEncriptado}`, {});
+    // ⭐ Usa DELETE y el ID va en la URL
+    return this.http.delete(
+      `${this.apiUrl}/${idEncriptado}`, 
+      { headers: this.getAuthHeaders() }
+    );
   }
 }

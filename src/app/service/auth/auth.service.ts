@@ -12,26 +12,29 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-    // 🔹 Método para registrar un usuario
+  // 🔹 Registrar un usuario
   registerUser(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/usuarios`, userData);
   }
 
-  login(username: string, password: string): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/login`, { username, password });
-  }
+login(email: string, password: string): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(`${this.apiUrl}/login`, { email, password });
+}
 
+
+  // 🔹 Olvidó contraseña
   forgotPassword(email: string): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${this.apiUrl}/forgot-password`, { email }).pipe(
       catchError((error) => throwError(() => error))
     );
   }
 
-verify2FA(username: string, code: string) {
-  return this.http.post(`${this.apiUrl}/verify-2fa`, { username, code });
-}
+  // 🔹 Verificar código 2FA
+  verify2FA(username: string, code: string) {
+    return this.http.post(`${this.apiUrl}/verify-2fa`, { username, code });
+  }
 
-
+  // 🔹 Cambiar contraseña
   changePassword(token: string, newPassword: string) {
     return this.http.post(`${this.apiUrl}/restablecer-password`, {
       token,
@@ -41,11 +44,19 @@ verify2FA(username: string, code: string) {
     );
   }
 
+  // 🔹 Generar QR 2FA
+  enable2FA(username: string) {
+    return this.http.get<{ otpAuthUrl: string; secret: string }>(
+      `${this.apiUrl}/generate-qr/${username}`
+    );
+  }
 
-enable2FA(username: string) {
-      return this.http.get<{ otpAuthUrl: string; secret: string }>(
-        `${this.apiUrl}/generate-qr/${username}`
-      );
-    }
+getUserByDNI(dni: string): Observable<{ names: string; surnames: string }> {
+  return this.http.get<{ names: string; surnames: string }>(
+    `https://graphperu.daustinn.com/api/query/${dni}`
+  ).pipe(
+    catchError((error) => throwError(() => error))
+  );
+}
 
 }

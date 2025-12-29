@@ -1,1 +1,1 @@
-var t={production:!0,apiUrl:"https://megayuntasapi.amazon.dev/api"};export{t as a};
+var t={production:!0,apiUrl:"http://localhost:8080/api"};export{t as a};

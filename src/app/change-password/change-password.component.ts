@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../service/auth/auth.service';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -9,7 +9,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.css']
+  styleUrls: ['./change-password.component.css'],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]  // <-- Esta línea permite usar iconify-icon
+
 })
 export class ChangePasswordComponent {
   password: string = '';
