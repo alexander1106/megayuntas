@@ -22,6 +22,8 @@
                 </div>
                 <input type="email"
        name="loginEmail"
+                           class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
+
        [(ngModel)]="loginData.email"
        placeholder="Correo" />
 
@@ -78,7 +80,8 @@
        pattern="^[0-9]{8}$"
        placeholder="DNI"
        class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
-       (keydown.enter)="buscarDNI()" />
+       (keydown.enter)="onDNIEnter($event)" />
+
 
     </div>
     <div *ngIf="registerDNI.invalid && registerDNI.touched" class="text-red-500 text-xs mt-1 ml-1 leading-tight">
@@ -191,6 +194,8 @@
     Registrarse
   </button>
 </form>
+<!-- Modal de Firma a pantalla completa -->
+
 
           <!-- Mostrar errores -->
           <div *ngIf="error" class="mt-4 text-red-500 text-center text-sm">
@@ -349,4 +354,60 @@
   </div>
 </div>
 
+</div>
+<div *ngIf="mostrarModalFirma"
+     class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+
+  <div class="bg-white w-11/12 md:w-3/5 lg:w-2/5 max-h-[80vh] p-6 flex flex-col rounded-2xl shadow-xl transform transition-transform duration-500 scale-95 hover:scale-100">
+
+<!-- Título con color específico -->
+<h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-center text-[#00A89D] drop-shadow-md">
+  Términos y Condiciones
+</h2>
+
+
+    <!-- Contenido de Términos (scrollable) -->
+    <div class="overflow-y-auto flex-1 mb-4 space-y-3 pr-2 scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-100">
+      <div class="p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition">
+        <h3 class="font-semibold text-gray-800 mb-1">1. Aceptación de los Términos</h3>
+        <p class="text-gray-700 leading-relaxed">Al utilizar esta aplicación, aceptas estar sujeto a estos Términos y Condiciones. Debes leerlos cuidadosamente antes de usarla.</p>
+      </div>
+      <div class="p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition">
+        <h3 class="font-semibold text-gray-800 mb-1">2. Registro de Usuario</h3>
+        <p class="text-gray-700 leading-relaxed">Debes proporcionar información veraz y completa al registrarte. No se permiten datos falsos o suplantación de identidad.</p>
+      </div>
+      <div class="p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition">
+        <h3 class="font-semibold text-gray-800 mb-1">3. Uso de la Aplicación</h3>
+        <p class="text-gray-700 leading-relaxed">La aplicación debe ser utilizada únicamente para fines legales. Queda prohibido el uso indebido de cualquier funcionalidad.</p>
+      </div>
+      <!-- Continúa con el resto de secciones -->
+    </div>
+
+    <!-- Checkbox de aceptación -->
+    <div class="flex items-center mb-3">
+      <input type="checkbox" id="aceptaTerminos" [(ngModel)]="registerData.aceptaTerminos" name="aceptaTerminos"
+             class="mr-2 w-5 h-5 accent-green-500 rounded">
+      <label for="aceptaTerminos" class="text-gray-700 text-sm font-medium">
+        Acepto los Términos y Condiciones y autorizo mi firma electrónica
+      </label>
+    </div>
+    <div *ngIf="!registerData.aceptaTerminos && submitAttempt" class="text-red-500 text-xs mb-2">
+      Debes aceptar los Términos y Condiciones para continuar
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end gap-3 mt-4">
+      <button (click)="cerrarModalFirma()"
+              class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+        Cerrar
+      </button>
+      <button (click)="aceptarFirma()"
+        [disabled]="!registerData.aceptaTerminos"
+        class="px-4 py-2 bg-[#00A89D] text-white rounded-lg hover:bg-[#00897F] disabled:opacity-50 font-medium transition">
+  Aceptar y Continuar
+</button>
+
+    </div>
+
+  </div>
 </div>

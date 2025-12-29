@@ -42,3 +42,19 @@
 .codigo{
   margin: 35px !important;
 }
+canvas {
+  box-sizing: border-box;
+  touch-action: none; /* evita scroll al dibujar en touch */
+}
+
+ @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+
+  @keyframes slideInTop {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-in-top { animation: slideInTop 0.5s ease-out; }

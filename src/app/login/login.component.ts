@@ -2,10 +2,11 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../service/auth/auth.service'; // Ajusta la ruta a tu servicio
-import Swal from 'sweetalert2';
 import { QRCodeModule } from 'angularx-qrcode';
+import Swal from 'sweetalert2';
 
+// Asegúrate de que la ruta sea correcta
+import { AuthService } from '../service/auth/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -15,23 +16,22 @@ import { QRCodeModule } from 'angularx-qrcode';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  // Estados de vista
+  // --- Estados de la Vista ---
   isLoginMode = true;
-  isForgotPasswordMode = false;
   isLoading = false;
   showPassword = false;
   mostrarModalOTP = false;
-  
-  // Variables 2FA
+  error = '';
+
+  // --- Datos para 2FA ---
   username = '';
   tokenTemporal = '';
   qrCodeUrl = '';
-  error = '';
 
-  // Modelos de datos
-  loginData = { 
-    email: '', 
-    password: '' 
+  // --- Modelos de Datos ---
+  loginData = {
+    email: '',
+    password: ''
   };
 
   registerData = {
@@ -46,24 +46,24 @@ export class LoginComponent {
   };
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
   ) {}
 
   // ==========================================================
-  // LÓGICA DE LOGIN
+  // 1. LOGIN (Con soporte 2FA)
   // ==========================================================
   onLogin(form: NgForm) {
     if (form.invalid) return;
-    
+
     this.isLoading = true;
     this.error = '';
 
     this.authService.login(this.loginData.email, this.loginData.password).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-        
-        // 1. Verificar errores lógicos del backend
+
+        // Validar si el backend envió un estado de error lógico
         if (response?.status === 'error') {
           Swal.fire({
             icon: 'error',
@@ -75,36 +75,35 @@ export class LoginComponent {
 
         const data = response?.data;
 
-        // 2. Verificar si requiere 2FA
+        // CASO A: Requiere Autenticación de Dos Factores (2FA)
         if (data?.require2FA) {
           this.username = data.username;
-          this.enable2FA(data.username);
+          this.enable2FA(data.username); // Prepara el QR
           Swal.fire({
             icon: 'info',
-            title: 'Seguridad',
-            text: 'Se requiere verificación de dos pasos',
+            title: 'Verificación 2FA',
+            text: 'Se requiere autenticación de dos factores.',
             timer: 2000,
             showConfirmButton: false
           });
           return;
         }
 
-        // 3. Login Exitoso Directo
+        // CASO B: Login Directo Exitoso
         if (data?.token) {
-          localStorage.setItem('token', data.token);
-          this.redirigirAlAdmin();
+          this.finalizarLogin(data.token);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
-        const msg = err?.error?.message || 'Credenciales incorrectas o servidor no disponible';
+        const msg = err?.error?.message || 'Credenciales incorrectas o error de servidor';
         Swal.fire({ icon: 'error', title: 'Error', text: msg });
       }
     });
   }
 
   // ==========================================================
-  // LÓGICA DE REGISTRO
+  // 2. REGISTRO (Con búsqueda DNI)
   // ==========================================================
   onRegister() {
     if (this.registerData.password !== this.registerData.confirmPassword) {
@@ -121,7 +120,7 @@ export class LoginComponent {
           title: '¡Registro exitoso!',
           text: 'Tu cuenta ha sido creada. Por favor inicia sesión.'
         });
-        this.isLoginMode = true; // Volver al login
+        this.isLoginMode = true; // Cambiar a vista de login
       },
       error: (err) => {
         this.isLoading = false;
@@ -131,18 +130,15 @@ export class LoginComponent {
     });
   }
 
-  // --- BÚSQUEDA RENIEC (DNI) ---
+  // --- Búsqueda RENIEC (Auto-rellenado) ---
   buscarDNI() {
     const dni = this.registerData.dni.trim();
-    if (dni.length !== 8) {
-      Swal.fire('Atención', 'El DNI debe tener 8 dígitos', 'warning');
-      return;
-    }
+    if (dni.length !== 8) return; // Validación silenciosa o usar alerta si prefiere
 
     this.isLoading = true;
-    // Asegúrate de que tu AuthService tenga este método implementado
     this.authService.getUserByDNI(dni).subscribe({
       next: (res: any) => {
+        // Asignamos nombres encontrados al formulario
         this.registerData.nombres = res.nombres || res.names || '';
         this.registerData.apellidos = res.apellidos || res.surnames || '';
         this.isLoading = false;
@@ -150,7 +146,6 @@ export class LoginComponent {
       error: () => {
         this.isLoading = false;
         Swal.fire('Aviso', 'No se encontraron datos para este DNI', 'info');
-        // Limpiamos nombres para que el usuario los ingrese manual si falla
         this.registerData.nombres = '';
         this.registerData.apellidos = '';
       }
@@ -164,12 +159,12 @@ export class LoginComponent {
   }
 
   // ==========================================================
-  // LÓGICA 2FA
+  // 3. LÓGICA 2FA (QR y Verificación)
   // ==========================================================
   enable2FA(username: string) {
     this.authService.enable2FA(username).subscribe({
       next: (res: any) => {
-        this.qrCodeUrl = res.otpAuthUrl;
+        this.qrCodeUrl = res.otpAuthUrl; // URL para generar el QR en el HTML
         this.mostrarModalOTP = true;
       },
       error: () => Swal.fire('Error', 'No se pudo generar el código QR', 'error')
@@ -184,9 +179,10 @@ export class LoginComponent {
 
     this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
       next: (res: any) => {
-        localStorage.setItem('token', res.token);
-        this.mostrarModalOTP = false;
-        this.redirigirAlAdmin();
+        if (res.token) {
+          this.mostrarModalOTP = false;
+          this.finalizarLogin(res.token);
+        }
       },
       error: () => {
         this.error = 'Código incorrecto o expirado';
@@ -195,18 +191,12 @@ export class LoginComponent {
   }
 
   // ==========================================================
-  // UTILIDADES UI
+  // 4. UTILIDADES
   // ==========================================================
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-    this.error = '';
-  }
-
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
-  }
-
-  private redirigirAlAdmin() {
+  
+  // Función centralizada para guardar token y redirigir
+  private finalizarLogin(token: string) {
+    localStorage.setItem('token', token);
     Swal.fire({
       icon: 'success',
       title: '¡Bienvenido!',
@@ -216,5 +206,14 @@ export class LoginComponent {
     }).then(() => {
       this.router.navigate(['/admin']);
     });
+  }
+
+  toggleMode() {
+    this.isLoginMode = !this.isLoginMode;
+    this.error = '';
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

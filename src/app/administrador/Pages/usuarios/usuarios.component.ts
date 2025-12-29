@@ -1,18 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 
-// Asegúrate de que las rutas sean correctas según tu estructura
+// Componentes Modales
 import { EliminarUsuariosModalComponent } from './eliminar-usuarios-modal/eliminar-usuarios-modal.component';
-import { UsuariosService } from '../../service/admin/usuario/usuario.service'; // Ajusta la ruta si es necesario
 import { EditarUsuariosModalComponent } from './editar-usuarios-modal/editar-usuarios-modal.component';
 
-// CAMBIO 1: La interfaz ahora define id como string
+// Servicio: Verifica que esta sea la ruta correcta en tu proyecto actual
+import { UsuariosService } from '../../service/admin/usuario/usuario.service'; 
+
+// Librería PDF
+import jsPDF from 'jspdf';
+
+// --- INTERFAZ FUSIONADA ---
 interface Usuario {
-  id: string; // <-- Antes number, ahora string (hash encriptado)
+  id: string; // <-- SEGURO: String para hash encriptado
   nombres: string;
   apellidos: string;
   email: string;
-  idRol: number | string; // Puede ser número al llegar, string al mapear
+  idRol: number | string;
+  dni: string; // <-- FUNCIONAL: Necesario para el PDF
 }
 
 @Component({
@@ -30,22 +36,21 @@ interface Usuario {
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
 
+  // Mapa de roles combinado
   readonly rolesMap: { [key: string]: string } = {
-    '3': 'Usuario',
-    '2': 'Administrador', // Ejemplo
-    '1': 'SuperAdmin'     // Ejemplo
+    '1': 'SuperAdmin',
+    '2': 'Administrador',
+    '3': 'Usuario'
   };
 
   mostrarModalAgregar = false;
   mostrarModalEditar = false;
   mostrarModalEliminar = false;
-  
+
   usuarioSeleccionado: Usuario | null = null;
   
-  // CAMBIO 2: La variable para eliminación ahora es string
-  usuarioIdAEliminar: string | null = null; 
-
-  idRol = "Usuario"; 
+  // Variable para eliminación como STRING (Seguridad)
+  usuarioIdAEliminar: string | null = null;
 
   constructor(private usuariosService: UsuariosService) {}
 
@@ -57,11 +62,10 @@ export class UsuariosComponent implements OnInit {
     this.usuariosService.getUsuarios().subscribe({
       next: res => {
         console.log('Datos recibidos:', res);
-        // Mapeamos los datos asegurando que la estructura coincida
         this.usuarios = res.map((usuario: any) => ({
           ...usuario,
-          // Si el backend envía "idUsuario", lo asignamos a "id", si envía "id", se queda igual
-          id: usuario.id || usuario.idUsuario, 
+          // Mapeo robusto: usa idUsuario si id no existe, y asegura string
+          id: String(usuario.id || usuario.idUsuario), 
           idRol: this.rolesMap[usuario.idRol] || usuario.idRol
         }));
       },
@@ -69,9 +73,98 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  // CAMBIO 3: TrackBy ahora retorna string
+  // TrackBy retorna string
   trackByUsuarioId(index: number, usuario: Usuario): string {
     return usuario.id;
+  }
+
+  // --- FUNCION PARA DESCARGAR PDF (Del código 1) ---
+  descargarPDF(u: Usuario) {
+    const doc = new jsPDF();
+    const margenX = 15;
+    let margenY = 20;
+
+    // --- Encabezado ---
+    doc.setFillColor(0, 168, 157); // Verde corporativo
+    doc.rect(0, 0, 210, 25, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text('MEGAYUNTAS', margenX, 17);
+
+    // Datos de contacto
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    margenY += 20;
+    doc.text('Dirección: Calle Falsa 123', margenX, margenY);
+    margenY += 6;
+    doc.text('Teléfono: +51 987654321', margenX, margenY);
+    margenY += 6;
+    doc.text('Email: contacto@megayuntas.com', margenX, margenY);
+    margenY += 10;
+
+    // --- Información del Usuario ---
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('Información del Usuario', margenX, margenY);
+    margenY += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Nombre: ${u.nombres} ${u.apellidos}`, margenX, margenY);
+    margenY += 6;
+    doc.text(`DNI: ${u.dni || '---------'} `, margenX, margenY);
+    margenY += 6;
+    doc.text(`Email: ${u.email}`, margenX, margenY);
+    margenY += 6;
+    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, margenX, margenY);
+    margenY += 10;
+
+    // Línea divisoria
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.5);
+    doc.line(margenX, margenY, 195, margenY);
+    margenY += 10;
+
+    // --- Términos y Condiciones ---
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('Términos y Condiciones', margenX, margenY);
+    margenY += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    const terminos = [
+      '1. Aceptación de los Términos: Al utilizar esta aplicación, aceptas estar sujeto a estos Términos y Condiciones.',
+      '2. Registro de Usuario: Debes proporcionar información veraz y completa.',
+      '3. Uso de la Aplicación: La aplicación debe ser utilizada únicamente para fines legales.',
+      '4. Privacidad: Tus datos serán protegidos según la política de la empresa.',
+      '5. Firma y Aceptación: Al aceptar, confirmas que has leído y aceptas estos términos.'
+    ];
+    terminos.forEach(line => {
+      doc.text(line, margenX, margenY, { maxWidth: 180 });
+      margenY += 10;
+    });
+
+    margenY += 10;
+
+    // --- Confirmación de aceptación ---
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(0, 128, 0);
+    doc.text('He leído y acepto los Términos y Condiciones', margenX, margenY);
+    margenY += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Nombre: ${u.nombres} ${u.apellidos}`, margenX, margenY);
+    margenY += 6;
+    doc.text(`DNI: ${u.dni || '---------'} `, margenX, margenY);
+    margenY += 6;
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, margenX, margenY);
+
+    doc.save(`${u.nombres}_${u.apellidos}_Terminos.pdf`);
   }
 
   // --- AGREGAR ---
@@ -95,7 +188,7 @@ export class UsuariosComponent implements OnInit {
   }
 
   // --- ELIMINAR ---
-  // CAMBIO 4: Recibe string en lugar de number
+  // Recibe string (Seguridad)
   abrirModalEliminar(usuarioId: string): void {
     this.usuarioIdAEliminar = usuarioId;
     this.mostrarModalEliminar = true;
@@ -106,7 +199,6 @@ export class UsuariosComponent implements OnInit {
     this.usuarioIdAEliminar = null;
   }
 
-  // CAMBIO 5: Lógica de eliminación adaptada a string
   eliminarUsuario(id: string): void {
     if (!id) {
       console.error('ID inválido para eliminación');
@@ -121,7 +213,6 @@ export class UsuariosComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar Usuario:', err);
-        // Aquí podrías agregar una alerta visual (Toaster/SweetAlert)
       }
     });
   }
