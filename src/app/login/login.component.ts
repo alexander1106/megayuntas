@@ -16,20 +16,14 @@ import { QRCodeModule } from 'angularx-qrcode';
 })
 export class LoginComponent {
   isForgotPasswordMode = false;
+  mostrarModalFirma = false;
 
   loginData = { email: '', password: '' };
-
   registerData = {
-    nombres: '',
-    apellidos: '',
-    dni: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    suscripcion: 1,
-    idRol: 1
+    nombres: '', apellidos: '', dni: '', email: '',
+    password: '', confirmPassword: '', suscripcion: 1, idRol: 1,
+    aceptaTerminos: false
   };
-
   error = '';
   isLoginMode = true;
   username = '';
@@ -38,138 +32,159 @@ export class LoginComponent {
   isLoading = false;
   showPassword = false;
   qrCodeUrl = '';
+  submitAttempt = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
-onLogin(form: NgForm) {
-  if (form.invalid) return;
-  this.isLoading = true;
-  this.error = '';
+  // -------------------- LOGIN --------------------
+  onLogin(form: NgForm) {
+    if (form.invalid) return;
+    this.isLoading = true;
+    this.error = '';
 
-  this.authService.login(this.loginData.email, this.loginData.password).subscribe({
-    next: (response: any) => {
-      this.isLoading = false;
+    this.authService.login(this.loginData.email, this.loginData.password).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        const status = response?.status;
+        const message = response?.message;
+        const data = response?.data;
 
-      const status = response?.status;
-      const message = response?.message;
-      const data = response?.data;
+        if (status === 'error') {
+          Swal.fire({ icon: 'error', title: 'Error', text: message || 'Error desconocido' });
+          return;
+        }
 
-      if (status === 'error') {
-        // Mostrar alerta según el mensaje que venga del backend
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: message || 'Error desconocido',
-        });
-        return;
-      }
+        if (data?.require2FA) {
+          this.username = data.username;
+          this.enable2FA(data.username);
+          Swal.fire({ icon: 'info', title: 'Verificación 2FA', text: 'Se requiere autenticación de dos factores' });
+          return;
+        }
 
-      // Si requiere 2FA
-      if (data?.require2FA) {
-        this.username = data.username;
-        this.enable2FA(data.username);
-        Swal.fire({
-          icon: 'info',
-          title: 'Verificación 2FA',
-          text: 'Se requiere autenticación de dos factores',
-        });
-        return;
-      }
-
-      // Si el login es correcto
-      if (data?.token) {
-        localStorage.setItem('token', data.token);
-
-        Swal.fire({
-          icon: 'success',
-          title: '¡Bienvenido!',
-          text: 'Login exitoso',
-          confirmButtonText: 'Continuar'
-        }).then(() => {
-          this.router.navigate(['/admin']); // Navegar al panel
-        });
-      }
-    },
-    error: (err) => {
-      this.isLoading = false;
-
-      // Si el backend devuelve un error no manejado
-      const backendMessage = err?.error?.message || 'Credenciales incorrectas o error en el servidor';
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: backendMessage,
-      });
-    }
-  });
-}
-
-
-
-  // REGISTRO
-  onRegister() {
-    if (this.registerData.password !== this.registerData.confirmPassword) {
-      this.error = 'Las contraseñas no coinciden';
-      return;
-    }
-
-    this.authService.registerUser(this.registerData).subscribe({
-      next: () => {
-        Swal.fire('Registro exitoso', 'Tu cuenta ha sido creada correctamente.', 'success');
-        this.isLoginMode = true;
+        if (data?.token) {
+          localStorage.setItem('token', data.token);
+          Swal.fire({ icon: 'success', title: '¡Bienvenido!', text: 'Login exitoso', confirmButtonText: 'Continuar' })
+            .then(() => this.router.navigate(['/admin']));
+        }
       },
-      error: () => {
-        Swal.fire('Error al registrar', 'No se pudo crear el usuario. Inténtalo nuevamente.', 'error');
-      },
+      error: (err) => {
+        this.isLoading = false;
+        const backendMessage = err?.error?.message || 'Credenciales incorrectas o error en el servidor';
+        Swal.fire({ icon: 'error', title: 'Error', text: backendMessage });
+      }
     });
   }
 
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-    this.error = '';
+// Agrega dentro de LoginComponent
+aceptarFirma() {
+  this.mostrarModalFirma = false;
+  this.registerData.aceptaTerminos = true;
+  this.enviarRegistro();
+}
+
+
+onRegister() {
+  this.submitAttempt = true;
+  this.error = '';
+
+  // Validar que todos los campos estén llenos
+  if (
+    !this.registerData.nombres.trim() ||
+    !this.registerData.apellidos.trim() ||
+    !this.registerData.dni.trim() ||
+    !this.registerData.email.trim() ||
+    !this.registerData.password ||
+    !this.registerData.confirmPassword
+  ) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor, complete todos los campos antes de continuar.'
+    });
+    return; // ⚠️ Salir sin abrir el modal
   }
 
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+  // Validar que las contraseñas coincidan
+  if (this.registerData.password !== this.registerData.confirmPassword) {
+    this.error = 'Las contraseñas no coinciden';
+    return;
   }
 
-  // 2FA
+  // Abrir modal de Términos solo si aún no aceptó
+  if (!this.registerData.aceptaTerminos) {
+    this.mostrarModalFirma = true;  // ✅ Abrir modal de Términos
+    return;
+  }
+
+  // Si todo está bien y aceptó términos, enviar al backend
+  this.enviarRegistro();
+}
+
+  // Función para cerrar el modal
+  cerrarModalFirma() {
+    this.mostrarModalFirma = false;
+  }
+  enviarRegistro() {
+    const payload = {
+      nombres: this.registerData.nombres.trim(),
+      apellidos: this.registerData.apellidos.trim(),
+      email: this.registerData.email.trim(),
+      password: this.registerData.password,
+      dni: this.registerData.dni.trim(),
+      idRol: this.registerData.idRol,
+      firmaBase64: 'Acepta Términos' // Solo indicamos que aceptó los términos
+    };
+
+    this.isLoading = true;
+    this.authService.registerUser(payload).subscribe({
+      next: () => {
+        this.isLoading = false;
+        Swal.fire('Registro exitoso', 'Tu cuenta ha sido creada correctamente.', 'success');
+        this.isLoginMode = true;
+        this.registerData = {
+          nombres: '', apellidos: '', dni: '', email: '', password: '', confirmPassword: '', idRol: 1, suscripcion: 1, aceptaTerminos: false
+        };
+        this.submitAttempt = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        Swal.fire('Error al registrar', err?.error?.message || 'No se pudo crear el usuario', 'error');
+      }
+    });
+  }
+
+  toggleMode() { this.isLoginMode = !this.isLoginMode; this.error = ''; }
+  togglePasswordVisibility() { this.showPassword = !this.showPassword; }
+
+  // -------------------- 2FA --------------------
   verificarCodigo2FA() {
     if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
       this.error = 'Ingrese un código válido de 6 dígitos';
       return;
     }
-
     this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
       next: (res: any) => {
         localStorage.setItem('token', res.token);
         this.mostrarModalOTP = false;
         this.router.navigate(['/admin']);
       },
-      error: () => {
-        this.error = 'Código 2FA incorrecto o expirado';
-      }
+      error: () => { this.error = 'Código 2FA incorrecto o expirado'; }
     });
   }
 
   enable2FA(username: string) {
     this.authService.enable2FA(username).subscribe({
-      next: (res: any) => {
-        this.qrCodeUrl = res.otpAuthUrl;
-        this.mostrarModalOTP = true;
-      },
+      next: (res: any) => { this.qrCodeUrl = res.otpAuthUrl; this.mostrarModalOTP = true; },
       error: () => Swal.fire('Error', 'No se pudo activar el 2FA', 'error')
     });
   }
 
-  // Autocompletar DNI
   buscarDNI() {
     const dni = this.registerData.dni.trim();
     if (dni.length !== 8) {
       Swal.fire('Error', 'El DNI debe tener 8 dígitos', 'warning');
       return;
     }
-
     this.isLoading = true;
     this.authService.getUserByDNI(dni).subscribe({
       next: (res: any) => {
@@ -186,7 +201,6 @@ onLogin(form: NgForm) {
     });
   }
 
-  onDNIChange() {
-    if (this.registerData.dni.length === 8) this.buscarDNI();
-  }
+  onDNIChange() { if (this.registerData.dni.length === 8) this.buscarDNI(); }
+  onDNIEnter(event: KeyboardEvent) { event.preventDefault(); this.buscarDNI(); }
 }

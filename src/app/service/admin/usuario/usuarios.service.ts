@@ -27,7 +27,7 @@ export class UsuariosService {
   /** Listar todos los usuarios */
   getUsuarios(): Observable<any> {
     return this.http.get(
-      `${this.apiUrl}/usuarios`,
+      `${this.apiUrl}/auth/usuarios`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -35,7 +35,7 @@ export class UsuariosService {
   /** Crear un nuevo usuario */
   crearUsuario(usuario: any): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/usuarios`,
+      `${this.apiUrl}/auth/usuarios`,
       usuario,
       { headers: this.getAuthHeaders() }
     );
@@ -53,7 +53,7 @@ export class UsuariosService {
       email: usuario.email
     };
 
-    console.log('Datos a enviar:', body); 
+    console.log('Datos a enviar:', body);
 
     // URL sin el ID al final
     return this.http.put(

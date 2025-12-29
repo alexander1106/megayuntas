@@ -21,7 +21,7 @@
                         px-3 py-1 w-full max-w-xs
                         focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
-              </div>  
+              </div>
         </div>
       </div>
 
@@ -31,7 +31,7 @@
         <div class="mb-4 bg-gray-100 pt-2">
           <h1 class="text-xl font-bold text-gray-900">Usuarios</h1>
         </div>
-        
+
         <!-- Controles móviles -->
         <div class="space-y-4 bg-gray-100">
           <!-- Buscador móvil -->
@@ -45,15 +45,15 @@
                     focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
                     bg-white shadow-md relative z-10"
             />
-            <iconify-icon 
-              icon="mdi:magnify" 
+            <iconify-icon
+              icon="mdi:magnify"
               class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl pointer-events-none z-10">
             </iconify-icon>
           </div>
-          
+
         </div>
       </div>
-  
+
       <!-- TABLA - Desktop only -->
       <div class="hidden md:block">
       <div class="bg-[#00796B] shadow overflow-hidden">
@@ -64,6 +64,8 @@
               <th class="px-2 py-2 text-center text-xs font-medium text-white w-auto">ID</th>
               <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Nombre</th>
               <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Apellido</th>
+                            <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">DNI</th>
+
               <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Email</th>
               <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Perfil</th>
               <th class="px-3 md:px-6 py-2 text-center text-xs font-medium text-white">Acciones</th>
@@ -74,32 +76,27 @@
               <td class="px-2 text-center whitespace-nowrap w-auto text-xs">{{ u.id }}</td>
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.nombres }}</td>
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.apellidos }}</td>
+                            <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.dni }}</td>
+
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.email }}</td>
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.idRol }}</td>
-              <td class="px-3 md:px-6 whitespace-nowrap text-center text-xs">
-                <!-- Edit -->
-                <button
-                (click)="abrirModalEditar(u)"
-                  class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
-                  aria-label="Editar"
-                >
-                  <iconify-icon
-                    icon="mdi:square-edit-outline"
-                    class="text-2xl text-teal-600"
-                  ></iconify-icon>
-                </button>
-                <!-- Delete -->
-                <button
-                (click)="abrirModalEliminar(u.id)"
-                  class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition"
-                  aria-label="Eliminar"
-                >
-                  <iconify-icon
-                    icon="mdi:delete-outline"
-                    class="text-2xl text-red-600"
-                    ></iconify-icon>
-                  </button>
-                </td>
+             <td class="px-3 md:px-6 whitespace-nowrap text-center text-xs">
+  <!-- Edit -->
+  <button (click)="abrirModalEditar(u)" class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition" aria-label="Editar">
+    <iconify-icon icon="mdi:square-edit-outline" class="text-2xl text-teal-600"></iconify-icon>
+  </button>
+
+  <!-- Delete -->
+  <button (click)="abrirModalEliminar(u.id)" class="inline-flex items-center p-1 rounded hover:bg-gray-100 transition" aria-label="Eliminar">
+    <iconify-icon icon="mdi:delete-outline" class="text-2xl text-red-600"></iconify-icon>
+  </button>
+
+  <!-- Descargar PDF -->
+<button (click)="descargarPDF(u)" class="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Descargar PDF">
+  <iconify-icon icon="mdi:download-outline" class="text-lg text-blue-600"></iconify-icon>
+</button>
+</td>
+
               </tr>
             </tbody>
           </table>
@@ -109,16 +106,16 @@
 
     <!-- CARDS VIEW - Mobile only -->
     <div class="md:hidden space-y-4 relative z-10 bg-gray-100 pb-6">
-      <div 
-        *ngFor="let u of usuarios; trackBy: trackByUsuarioId" 
+      <div
+        *ngFor="let u of usuarios; trackBy: trackByUsuarioId"
         class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 relative z-10">
-        
+
         <!-- Header de la card -->
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <iconify-icon 
-                icon="mdi:account-outline" 
+              <iconify-icon
+                icon="mdi:account-outline"
                 class="text-blue-600 text-xl">
               </iconify-icon>
             </div>
@@ -127,7 +124,7 @@
               <p class="text-xs text-gray-500">ID: {{ u.id }}</p>
             </div>
           </div>
-          
+
           <!-- Acciones -->
           <div class="flex space-x-1 flex-shrink-0">
             <button
@@ -152,14 +149,14 @@
             </button>
           </div>
         </div>
-        
+
         <!-- Información de la card -->
         <div class="space-y-2">
           <div class="flex items-start justify-between py-1 border-b border-gray-100">
             <span class="text-xs font-medium text-gray-500 flex-shrink-0">Email:</span>
             <span class="text-sm text-gray-900 text-right ml-2 break-all">{{ u.email }}</span>
           </div>
-          
+
           <div class="flex items-center justify-between py-1">
             <span class="text-xs font-medium text-gray-500">Perfil:</span>
             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -168,16 +165,16 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Mensaje cuando no hay datos -->
       <div *ngIf="usuarios.length === 0" class="text-center py-12 bg-gray-100">
-        <iconify-icon 
-          icon="mdi:account-off-outline" 
+        <iconify-icon
+          icon="mdi:account-off-outline"
           class="text-5xl text-gray-400 mb-3">
         </iconify-icon>
         <p class="text-gray-500 text-sm">No hay usuarios registrados</p>
       </div>
-      
+
       <!-- Debug info - Remover en producción -->
       <div class="md:hidden text-center py-2 text-xs text-gray-500">
         Mostrando {{ usuarios.length }} usuarios
