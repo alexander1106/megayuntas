@@ -61,7 +61,6 @@ export class UsuariosService {
    * Se usa el verbo DELETE y se pasa el ID (hash) en la URL.
    */
   eliminarUsuario(idEncriptado: string): Observable<any> {
-    // RESTful estándar: DELETE /api/usuarios/{id}
     return this.http.delete(
       `${this.apiUrl}/usuarios/${idEncriptado}`, 
       { headers: this.getAuthHeaders() }
