@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../environment'; // Ajusta la ruta a tu environment
 import { Observable } from 'rxjs';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -52,8 +52,8 @@ export class AdministradorService {
 
     // El backend espera el objeto completo en el body (incluyendo ID encriptado)
     return this.http.put(
-      this.apiUrl, 
-      adm, 
+      this.apiUrl,
+      adm,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -64,7 +64,7 @@ export class AdministradorService {
   eliminarAdministrador(idEncriptado: string): Observable<any> {
     // ⭐ Usa DELETE y el ID va en la URL
     return this.http.delete(
-      `${this.apiUrl}/${idEncriptado}`, 
+      `${this.apiUrl}/${idEncriptado}`,
       { headers: this.getAuthHeaders() }
     );
   }

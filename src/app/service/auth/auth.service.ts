@@ -21,6 +21,14 @@ login(email: string, password: string): Observable<ApiResponse> {
   return this.http.post<ApiResponse>(`${this.apiUrl}/login`, { email, password });
 }
 
+// auth.service.ts
+verify2FA(code: string) {
+  return this.http.post<{ valid: boolean; token?: string }>(
+    `${this.apiUrl}/verify-2fa`,
+    { code }
+  );
+}
+
 
   // 🔹 Olvidó contraseña
   forgotPassword(email: string): Observable<ApiResponse> {
@@ -29,10 +37,6 @@ login(email: string, password: string): Observable<ApiResponse> {
     );
   }
 
-  // 🔹 Verificar código 2FA
-  verify2FA(username: string, code: string) {
-    return this.http.post(`${this.apiUrl}/verify-2fa`, { username, code });
-  }
 
   // 🔹 Cambiar contraseña
   changePassword(token: string, newPassword: string) {

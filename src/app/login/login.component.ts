@@ -2,11 +2,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { QRCodeModule } from 'angularx-qrcode';
-import Swal from 'sweetalert2';
-
-// Asegúrate de que la ruta sea correcta
 import { AuthService } from '../service/auth/auth.service';
+import Swal from 'sweetalert2';
+import { QRCodeModule } from 'angularx-qrcode';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -16,204 +15,259 @@ import { AuthService } from '../service/auth/auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  // --- Estados de la Vista ---
-  isLoginMode = true;
-  isLoading = false;
-  showPassword = false;
-  mostrarModalOTP = false;
-  error = '';
+  isForgotPasswordMode = false;
+  mostrarModalFirma = false;
 
-  // --- Datos para 2FA ---
+  loginData = { email: '', password: '' };
+  registerData = {
+    nombres: '', apellidos: '', dni: '', email: '',
+    password: '', confirmPassword: '', suscripcion: 1, idRol: 1,
+    aceptaTerminos: false
+  };
+  error = '';
+  isLoginMode = true;
   username = '';
   tokenTemporal = '';
+  mostrarModalOTP = false;
+  isLoading = false;
+  showPassword = false;
   qrCodeUrl = '';
+  submitAttempt = false;
 
-  // --- Modelos de Datos ---
-  loginData = {
-    email: '',
-    password: ''
-  };
+  constructor(private authService: AuthService, private router: Router) {}
 
-  registerData = {
-    dni: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    suscripcion: 1,
-    idRol: 1
-  };
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  // ==========================================================
-  // 1. LOGIN (Con soporte 2FA)
-  // ==========================================================
+  // -------------------- LOGIN --------------------
   onLogin(form: NgForm) {
     if (form.invalid) return;
-
     this.isLoading = true;
     this.error = '';
 
     this.authService.login(this.loginData.email, this.loginData.password).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-
-        // Validar si el backend envió un estado de error lógico
-        if (response?.status === 'error') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error de acceso',
-            text: response.message || 'Error desconocido',
-          });
-          return;
-        }
-
+        const status = response?.status;
+        const message = response?.message;
         const data = response?.data;
 
-        // CASO A: Requiere Autenticación de Dos Factores (2FA)
-        if (data?.require2FA) {
-          this.username = data.username;
-          this.enable2FA(data.username); // Prepara el QR
-          Swal.fire({
-            icon: 'info',
-            title: 'Verificación 2FA',
-            text: 'Se requiere autenticación de dos factores.',
-            timer: 2000,
-            showConfirmButton: false
-          });
+        if (status === 'error') {
+          Swal.fire({ icon: 'error', title: 'Error', text: message || 'Error desconocido' });
           return;
         }
+if (data?.require2FA) {
+  Swal.fire({
+    icon: 'info',
+    title: 'Verificación 2FA',
+    text: 'Se ha enviado un código a tu correo',
+    confirmButtonText: 'OK'
+  }).then(() => {
+    this.mostrarModalOTP = true; // modal solo después de OK
+  });
+  return;
+}
 
-        // CASO B: Login Directo Exitoso
+
         if (data?.token) {
-          this.finalizarLogin(data.token);
+          localStorage.setItem('token', data.token);
+          Swal.fire({ icon: 'success', title: '¡Bienvenido!', text: 'Login exitoso', confirmButtonText: 'Continuar' })
+            .then(() => this.router.navigate(['/admin']));
         }
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        const msg = err?.error?.message || 'Credenciales incorrectas o error de servidor';
-        Swal.fire({ icon: 'error', title: 'Error', text: msg });
-      }
-    });
-  }
-
-  // ==========================================================
-  // 2. REGISTRO (Con búsqueda DNI)
-  // ==========================================================
-  onRegister() {
-    if (this.registerData.password !== this.registerData.confirmPassword) {
-      this.error = 'Las contraseñas no coinciden';
-      return;
-    }
-
-    this.isLoading = true;
-    this.authService.registerUser(this.registerData).subscribe({
-      next: () => {
-        this.isLoading = false;
-        Swal.fire({
-          icon: 'success',
-          title: '¡Registro exitoso!',
-          text: 'Tu cuenta ha sido creada. Por favor inicia sesión.'
-        });
-        this.isLoginMode = true; // Cambiar a vista de login
       },
       error: (err) => {
         this.isLoading = false;
-        console.error(err);
-        Swal.fire('Error', 'No se pudo registrar el usuario. Verifique los datos.', 'error');
-      },
-    });
-  }
-
-  // --- Búsqueda RENIEC (Auto-rellenado) ---
-  buscarDNI() {
-    const dni = this.registerData.dni.trim();
-    if (dni.length !== 8) return; // Validación silenciosa o usar alerta si prefiere
-
-    this.isLoading = true;
-    this.authService.getUserByDNI(dni).subscribe({
-      next: (res: any) => {
-        // Asignamos nombres encontrados al formulario
-        this.registerData.nombres = res.nombres || res.names || '';
-        this.registerData.apellidos = res.apellidos || res.surnames || '';
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        Swal.fire('Aviso', 'No se encontraron datos para este DNI', 'info');
-        this.registerData.nombres = '';
-        this.registerData.apellidos = '';
+        const backendMessage = err?.error?.message || 'Credenciales incorrectas o error en el servidor';
+        Swal.fire({ icon: 'error', title: 'Error', text: backendMessage });
       }
     });
   }
 
-  onDNIChange() {
-    if (this.registerData.dni.length === 8) {
-      this.buscarDNI();
-    }
-  }
-
-  // ==========================================================
-  // 3. LÓGICA 2FA (QR y Verificación)
-  // ==========================================================
-  enable2FA(username: string) {
-    this.authService.enable2FA(username).subscribe({
-      next: (res: any) => {
-        this.qrCodeUrl = res.otpAuthUrl; // URL para generar el QR en el HTML
-        this.mostrarModalOTP = true;
-      },
-      error: () => Swal.fire('Error', 'No se pudo generar el código QR', 'error')
-    });
-  }
-
-  verificarCodigo2FA() {
-    if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
-      this.error = 'Ingrese un código de 6 dígitos';
-      return;
-    }
-
-    this.authService.verify2FA(this.username, this.tokenTemporal).subscribe({
-      next: (res: any) => {
-        if (res.token) {
-          this.mostrarModalOTP = false;
-          this.finalizarLogin(res.token);
-        }
-      },
-      error: () => {
-        this.error = 'Código incorrecto o expirado';
-      }
-    });
-  }
-
-  // ==========================================================
-  // 4. UTILIDADES
-  // ==========================================================
-  
-  // Función centralizada para guardar token y redirigir
-  private finalizarLogin(token: string) {
-    localStorage.setItem('token', token);
-    Swal.fire({
-      icon: 'success',
-      title: '¡Bienvenido!',
-      text: 'Acceso correcto',
-      timer: 1500,
-      showConfirmButton: false
-    }).then(() => {
-      this.router.navigate(['/admin']);
-    });
-  }
-
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-    this.error = '';
-  }
-
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+// Agrega dentro de LoginComponent
+aceptarFirma() {
+  this.mostrarModalFirma = false;
+  this.registerData.aceptaTerminos = true;
+  this.enviarRegistro();
+}
+onlyNumbers(event: KeyboardEvent) {
+  const charCode = event.key;
+  if (!/^[0-9]$/.test(charCode)) {
+    event.preventDefault();
   }
 }
+
+
+onRegister() {
+  this.submitAttempt = true;
+  this.error = '';
+    const pwd = this.registerData.password;
+
+ // Validar longitud máxima y criterios
+ // Validar longitud máxima y criterios
+const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).+$/; // obligatorio mayúscula, número, símbolo
+if (!regex.test(pwd)) {
+  this.error = 'La contraseña debe incluir al menos una mayúscula, un número y un símbolo.';
+  return;
+}
+
+
+  if (pwd !== this.registerData.confirmPassword) {
+    this.error = 'Las contraseñas no coinciden';
+    return;
+  }
+
+  // Validar aceptación de términos
+  if (!this.registerData.aceptaTerminos) {
+    this.mostrarModalFirma = true;
+    return;
+  }
+
+  // Validar que todos los campos estén llenos
+  if (
+    !this.registerData.nombres.trim() ||
+    !this.registerData.apellidos.trim() ||
+    !this.registerData.dni.trim() ||
+    !this.registerData.email.trim() ||
+    !this.registerData.password ||
+    !this.registerData.confirmPassword
+  ) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor, complete todos los campos antes de continuar.'
+    });
+    return; // ⚠️ Salir sin abrir el modal
+  }
+
+  // Validar que las contraseñas coincidan
+  if (this.registerData.password !== this.registerData.confirmPassword) {
+    this.error = 'Las contraseñas no coinciden';
+    return;
+  }
+
+  // Abrir modal de Términos solo si aún no aceptó
+  if (!this.registerData.aceptaTerminos) {
+    this.mostrarModalFirma = true;  // ✅ Abrir modal de Términos
+    return;
+  }
+
+  // Si todo está bien y aceptó términos, enviar al backend
+  this.enviarRegistro();
+}
+
+  // Función para cerrar el modal
+  cerrarModalFirma() {
+    this.mostrarModalFirma = false;
+  }
+  enviarRegistro() {
+    const payload = {
+      nombres: this.registerData.nombres.trim(),
+      apellidos: this.registerData.apellidos.trim(),
+      email: this.registerData.email.trim(),
+      password: this.registerData.password,
+      dni: this.registerData.dni.trim(),
+      idRol: this.registerData.idRol,
+      firmaBase64: 'Acepta Términos' // Solo indicamos que aceptó los términos
+    };
+
+    this.isLoading = true;
+    this.authService.registerUser(payload).subscribe({
+      next: () => {
+        this.isLoading = false;
+        Swal.fire('Registro exitoso', 'Tu cuenta ha sido creada correctamente.', 'success');
+        this.isLoginMode = true;
+        this.registerData = {
+          nombres: '', apellidos: '', dni: '', email: '', password: '', confirmPassword: '', idRol: 1, suscripcion: 1, aceptaTerminos: false
+        };
+        this.submitAttempt = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        Swal.fire('Error al registrar', err?.error?.message || 'No se pudo crear el usuario', 'error');
+      }
+    });
+  }
+
+  toggleMode() { this.isLoginMode = !this.isLoginMode; this.error = ''; }
+  togglePasswordVisibility() { this.showPassword = !this.showPassword; }
+
+  // -------------------- 2FA --------------------
+// login.component.ts
+verificarCodigo2FA() {
+  if (!this.tokenTemporal || this.tokenTemporal.length !== 6) {
+    this.error = 'Ingrese un código válido de 6 dígitos';
+    return;
+  }
+
+  this.isLoading = true;
+  this.error = '';
+
+this.authService.verify2FA(this.tokenTemporal).subscribe({
+  next: (res: any) => {
+    console.log('Respuesta 2FA:', res); // 🔹 Ver qué viene exactamente
+    this.isLoading = false;
+    if (res.valid) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Código correcto',
+        text: 'Bienvenido al sistema',
+        confirmButtonText: 'Continuar'
+      }).then(() => {
+        // 🔹 Asegúrate de usar la propiedad correcta
+        const token = res.token || res.data?.token;
+        if (!token) {
+          this.error = 'Token no recibido del backend';
+          return;
+        }
+
+        localStorage.setItem('token', token);
+        this.mostrarModalOTP = false;
+        this.router.navigate(['/admin']); // redirigir al dashboard
+      });
+    } else {
+      this.error = 'Código 2FA incorrecto';
+    }
+  },
+  error: () => {
+    this.isLoading = false;
+    this.error = 'Error al verificar el código';
+  }
+});
+
+}
+
+onDNIChangeMobile() {
+  if (this.registerData.dni?.length === 8) {
+    this.buscarDNI();
+  }
+}
+
+buscarDNI() {
+  const dni = this.registerData.dni.trim();
+
+  if (dni.length !== 8) {
+    Swal.fire('Error', 'El DNI debe tener 8 dígitos', 'warning');
+    return;
+  }
+
+  this.isLoading = true;
+
+  this.authService.getUserByDNI(dni).subscribe({
+    next: (res: any) => {
+      this.registerData.nombres = res.names || '';
+      this.registerData.apellidos = res.surnames || '';
+      this.isLoading = false;
+    },
+    error: () => {
+      Swal.fire('Error', 'No se encontraron datos para este DNI', 'error');
+      this.registerData.nombres = '';
+      this.registerData.apellidos = '';
+      this.isLoading = false;
+    }
+  });
+}
+
+
+  onDNIChange() { if (this.registerData.dni.length === 8) this.buscarDNI(); }
+onDNIEnter() {
+  if (this.registerData.dni?.length === 8) {
+    this.buscarDNI();
+  }
+}}

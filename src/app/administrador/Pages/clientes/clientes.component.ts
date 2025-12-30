@@ -1,12 +1,13 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClientesService, Cliente } from '../../../service/clientes/clientes.service'; // Ruta a tu servicio
 
 // Modales
 import { AgregarClienteModalComponent } from './agregar-cliente-modal/agregar-cliente-modal.component';
 import { EditarClienteModalComponent } from './editar-cliente-modal/editar-cliente-modal.component';
 import { EliminarClienteModalComponent } from './eliminar-cliente-modal/eliminar-cliente-modal.component';
 import { LicenciaModalComponent } from './licencia-productos-modal/licencia-productos-modal.component';
+import { ClientesService } from '../../../service/admin/clientes/clientes.service';
+import { Cliente } from '../../../service/pages/clientes/clientes.service';
 
 @Component({
   selector: 'app-clientes',
@@ -32,9 +33,10 @@ export class ClientesComponent implements OnInit {
   mostrarModalLicencias = false;
 
   clienteSeleccionado: Cliente | null = null;
-  
+
   // ⭐ String ID
-  clienteIdAEliminar: string | null = null; 
+  clienteIdAEliminar: string | null = null;
+abrirModalLicencias: any;
 
   constructor(private clientesSvc: ClientesService) {}
 
@@ -45,11 +47,11 @@ export class ClientesComponent implements OnInit {
   cargarClientes(): void {
     this.cargandoClientes = true;
     this.clientesSvc.getClientes().subscribe({
-      next: (data) => {
+      next: (data:any) => {
         this.clientes = data;
         this.cargandoClientes = false;
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Error al cargar clientes', err);
         this.cargandoClientes = false;
       }
@@ -58,7 +60,7 @@ export class ClientesComponent implements OnInit {
 
   // --- Modales ---
   abrirModalAgregar(): void { this.mostrarModalAgregar = true; }
-  cerrarModalAgregar(): void { 
+  cerrarModalAgregar(): void {
     this.mostrarModalAgregar = false;
     this.cargarClientes();
   }
@@ -71,6 +73,10 @@ export class ClientesComponent implements OnInit {
     this.mostrarModalEditar = false;
     this.clienteSeleccionado = null;
     this.cargarClientes();
+  }
+  descargarReporte() {
+    console.log('Descargando reporte...');
+    // aquí va la lógica real para descargar
   }
 
   abrirModalEliminar(id: string): void { // ⭐ String
@@ -85,7 +91,7 @@ export class ClientesComponent implements OnInit {
   eliminarCliente(id: string): void { // ⭐ String
     this.clientesSvc.eliminarCliente(id).subscribe({
       next: () => {
-        this.clientes = this.clientes.filter(c => c.id !== id);
+this.clientes = this.clientes.filter(c => c.id !== Number(id));
         this.cerrarModalEliminar();
       },
       error: (err) => console.error(err)

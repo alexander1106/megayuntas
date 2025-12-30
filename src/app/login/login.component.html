@@ -34,14 +34,18 @@
                   <div class="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
                     <iconify-icon icon="mdi:lock" width="20" height="20" class="text-black"></iconify-icon>
                   </div>
-                  <input
-                    [type]="showPassword ? 'text' : 'password'"
-                    name="loginPassword"
-                    [(ngModel)]="loginData.password"
-                    placeholder="Contraseña"
-                    class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                    required
-                  />
+<input
+  [type]="showPassword ? 'text' : 'password'"
+  name="loginPassword"
+  [(ngModel)]="loginData.password"
+  #loginPassword="ngModel"
+  required
+  placeholder="Contraseña"
+  class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
+/>
+
+
+
                   <button
                     type="button"
                     (click)="togglePasswordVisibility()"
@@ -55,14 +59,17 @@
                     ></iconify-icon>
                   </button>
                 </div>
-          <a class="mb-4 text-sm text-gray-500 text-center" routerLink="/forgot-password">
+   <a class="mb-8 text-sm text-gray-500 text-center" routerLink="/forgot-password">
   ¿Olvidaste tu contraseña?
 </a>
 
-            <button type="submit"
-                    class="w-full py-3 rounded-full text-white text-lg font-semibold transition duration-300 bg-[#F28C7F] hover:bg-[#e07a6e]">
-              Iniciar sesión
-            </button>
+
+         <button type="submit"
+        class="w-full py-3 mt-3 rounded-full text-white text-lg font-semibold transition duration-300
+               bg-[#F28C7F] hover:bg-[#e07a6e]">
+  Registrar usuario
+</button>
+
           </form>
 <!-- FORMULARIO DE REGISTRO -->
 <form class="w-full max-w-md" *ngIf="!isLoginMode" (ngSubmit)="onRegister()">
@@ -72,15 +79,18 @@
       <div class="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
         <iconify-icon icon="mdi:card-account-details" width="20" height="20" class="text-black"></iconify-icon>
       </div>
-     <input type="text"
+<input type="text"
        name="registerDNI"
        [(ngModel)]="registerData.dni"
        #registerDNI="ngModel"
        required
        pattern="^[0-9]{8}$"
+       maxlength="8"
        placeholder="DNI"
        class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
-       (keydown.enter)="onDNIEnter($event)" />
+     (keyup.enter)="onDNIEnter()"
+
+       (keypress)="onlyNumbers($event)" />
 
 
     </div>
@@ -149,15 +159,16 @@
       <div class="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
         <iconify-icon icon="mdi:lock" width="20" height="20" class="text-black"></iconify-icon>
       </div>
-      <input
-            [type]="showPassword ? 'text' : 'password'"
-            name="registerPassword"
-            [(ngModel)]="registerData.password"
-            #registerPassword="ngModel"
-            required
-            pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{6,}$"
-            placeholder="Contraseña"
-            class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100" />
+    <input
+  [type]="showPassword ? 'text' : 'password'"
+  name="password"
+  [(ngModel)]="registerData.password"
+  #registerPassword="ngModel"
+  required
+  placeholder="Contraseña"
+  class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
+/>
+
       <button
         type="button"
         (click)="togglePasswordVisibility()"
@@ -179,13 +190,17 @@
       <div class="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
         <iconify-icon icon="mdi:lock-check" width="20" height="20" class="text-black"></iconify-icon>
       </div>
-      <input type="password"
-            name="confirmPassword"
-            [(ngModel)]="registerData.confirmPassword"
-            #confirmPassword="ngModel"
-            required
-            placeholder="Confirmar contraseña"
-            class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100" />
+      <input
+  type="password"
+  name="confirmPassword"
+  [(ngModel)]="registerData.confirmPassword"
+  #confirmPassword="ngModel"
+  required
+  placeholder="Confirmar contraseña"
+  class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
+/>
+
+
     </div>
   </div>
 
@@ -222,127 +237,252 @@
         <div class="md:hidden w-full h-full overflow-hidden relative">
 
           <!-- FORMULARIO DE INICIAR SESIÓN MÓVIL -->
-          <div class="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out transform"
-               [ngClass]="isLoginMode ? 'translate-x-0' : '-translate-x-full'">
-            <div class="w-full h-full p-6 flex flex-col items-center justify-center bg-white">
-              <h2 class="text-3xl font-bold text-center mb-6">Iniciar Sesión</h2>
-              <form class="w-full max-w-md" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+   <!-- LOGIN MÓVIL -->
+<div
+  class="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out"
+  [ngClass]="isLoginMode ? 'translate-x-0' : '-translate-x-full'"
+>
+  <div class="w-full h-full p-6 flex flex-col justify-center bg-white">
+
+    <!-- Logo -->
+    <div class="flex justify-center mb-6">
+      <img src="../../assets/Logo_Megayuntas2.png" class="w-40" />
+    </div>
+
+    <h2 class="text-3xl font-bold text-center mb-6">Iniciar Sesión</h2>
+
+    <form
+      class="w-full max-w-md mx-auto"
+      #loginFormMobile="ngForm"
+      (ngSubmit)="onLogin(loginFormMobile)"
+    >
+
+      <!-- EMAIL -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:email" width="20"></iconify-icon>
+        </div>
+        <input
+          type="email"
+          name="loginEmailMobile"
+          [(ngModel)]="loginData.email"
+          required
+          placeholder="Correo"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:lock" width="20"></iconify-icon>
+        </div>
+
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          name="loginPasswordMobile"
+          [(ngModel)]="loginData.password"
+          required
+          placeholder="Contraseña"
+          class="w-full border pl-12 pr-12 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          class="absolute right-3 top-1/2 -translate-y-1/2"
+        >
+          <iconify-icon
+            [icon]="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+            width="22"
+          ></iconify-icon>
+        </button>
+      </div>
+
+      <a
+        routerLink="/forgot-password"
+        class="block text-sm text-gray-500 text-center mb-6"
+      >
+        ¿Olvidaste tu contraseña?
+      </a>
+
+      <button
+        type="submit"
+        class="w-full py-3 rounded-full bg-[#F28C7F] text-white font-semibold text-lg hover:bg-[#e07a6e]"
+      >
+        Iniciar sesión
+      </button>
+
+    </form>
+
+    <button
+      (click)="toggleMode()"
+      class="mt-6 text-center text-gray-600 underline"
+    >
+      ¿No tienes cuenta? Regístrate
+    </button>
+
+    <div *ngIf="error" class="mt-4 text-red-500 text-center text-sm">
+      {{ error }}
+    </div>
+  </div>
+</div>
 
 
-                <div class="mb-4">
-                  <input type="email"
-       name="loginEmail"
-       [(ngModel)]="loginData.email"
-       placeholder="Correo" />
+<!-- REGISTRO MÓVIL -->
+<div
+  class="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out"
+  [ngClass]="isLoginMode ? 'translate-x-full' : 'translate-x-0'"
+>
+  <div class="w-full h-full p-6 flex flex-col justify-center bg-white">
 
-                </div>
-                <div class="mb-4 relative">
-                  <div class="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                    <iconify-icon icon="mdi:lock" width="20" height="20" class="text-black"></iconify-icon>
-                  </div>
-                  <input
-                    [type]="showPassword ? 'text' : 'password'"
-                    name="loginPassword"
-                    [(ngModel)]="loginData.password"
-                    placeholder="Contraseña"
-                    class="w-full border pl-12 pr-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                    required
-                  />
-                  <button
-                    type="button"
-                    (click)="togglePasswordVisibility()"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2"
-                  >
-                    <iconify-icon
-                      [icon]="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
-                      width="24"
-                      height="24"
-                      class="text-gray-500 cursor-pointer"
-                    ></iconify-icon>
-                  </button>
-                </div>
-                <a class="mb-4 text-sm text-gray-500 text-center" routerLink="/forgot-password">
-  ¿Olvidaste tu contraseña?
-</a>
+    <!-- Logo -->
+    <div class="flex justify-center mb-6">
+      <img src="../../assets/Logo_Megayuntas2.png" class="w-40" />
+    </div>
 
-                <button type="submit"
-                        class="w-full py-3 rounded-full text-white text-lg font-semibold transition duration-300
-                               bg-[#F28C7F] hover:bg-[#e07a6e]">
-                  Iniciar sesión
-                </button>
-              </form>
-              <div class="mt-6">
-                <button (click)="toggleMode()" class="text-gray-600 underline">
-                  ¿No tienes cuenta? Regístrate
-                </button>
-              </div>
-              <!-- Error en móvil -->
-              <div *ngIf="error" class="mt-4 text-red-500 text-center text-sm">
-                {{ error }}
-              </div>
-            </div>
-          </div>
+    <h2 class="text-3xl font-bold text-center mb-6">Registrarse</h2>
 
-          <!-- FORMULARIO DE REGISTRO MÓVIL -->
-          <div class="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out transform"
-               [ngClass]="isLoginMode ? 'translate-x-full' : 'translate-x-0'">
-               <div class="absolute top-4 left-1/2 z-20 w-[180px] transform transition-transform duration-700 ease-in-out"
-               [ngClass]="isLoginMode ? '-translate-x-1/2 translate-x-0' : '-translate-x-1/2 translate-x-full'">
-                <img src="../../assets/Logo_Megayuntas2.png" alt="Megayuntas" class="w-full max-w-full">
-              </div>
-            <div class="w-full h-full p-6 flex flex-col items-center justify-center bg-white">
-              <h2 class="text-3xl font-bold text-center mb-6">Registrarse</h2>
-              <form class="w-full max-w-md" (ngSubmit)="onRegister()">
-                <div class="mb-4">
-                  <input type="text"
-                         name="mobileRegisterName"
-                         [(ngModel)]="registerData.nombres"
-                         placeholder="Nombre"
-                         class="w-full border px-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                         required>
-                </div>
-                <div class="mb-4">
-                  <input type="email"
-                         name="mobileRegisterEmail"
-                         [(ngModel)]="registerData.email"
-                         placeholder="Correo"
-                         class="w-full border px-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                         required>
-                </div>
+    <form
+      class="w-full max-w-md mx-auto"
+      #registerFormMobile="ngForm"
+      (ngSubmit)="onRegister()"
+    >
 
-                <div class="mb-4">
-                  <input type="password"
-                         name="mobileRegisterPassword"
-                         [(ngModel)]="registerData.password"
-                         placeholder="Contraseña"
-                         class="w-full border px-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                         required>
-                </div>
-                <div class="mb-4">
-                  <input type="password"
-                         name="mobileConfirmPassword"
-                         [(ngModel)]="registerData.confirmPassword"
-                         placeholder="Confirmar contraseña"
-                         class="w-full border px-4 py-2 rounded-md focus:outline-none bg-gray-100"
-                         required>
-                </div>
-                <button type="submit"
-                        class="w-full py-3 rounded-full text-white text-lg font-semibold transition duration-300
-                               bg-[#00A89D] hover:bg-[#009387]">
-                  Registrarse
-                </button>
-              </form>
-              <div class="mt-6">
-                <button class="text-gray-600 underline">
-                  ¿Ya tienes cuenta? Inicia sesión
-                </button>
-              </div>
-              <!-- Error en móvil -->
-              <div *ngIf="error" class="mt-4 text-red-500 text-center text-sm">
-                {{ error }}
-              </div>
-            </div>
-          </div>
+      <!-- DNI (CORREGIDO, SIN DUPLICAR) -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:card-account-details" width="20"></iconify-icon>
+        </div>
+        <input
+          type="text"
+          name="registerDniMobile"
+          [(ngModel)]="registerData.dni"
+          required
+          maxlength="8"
+          inputmode="numeric"
+          placeholder="DNI"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+          (ngModelChange)="onDNIChangeMobile()"
+          (keypress)="onlyNumbers($event)"
+        />
+      </div>
+
+      <!-- NOMBRES -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:account" width="20"></iconify-icon>
+        </div>
+        <input
+          type="text"
+          name="registerNameMobile"
+          [(ngModel)]="registerData.nombres"
+          required
+          placeholder="Nombres"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+      </div>
+
+      <!-- APELLIDOS -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:account-box" width="20"></iconify-icon>
+        </div>
+        <input
+          type="text"
+          name="registerLastnameMobile"
+          [(ngModel)]="registerData.apellidos"
+          required
+          placeholder="Apellidos"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+      </div>
+
+      <!-- EMAIL -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:email" width="20"></iconify-icon>
+        </div>
+        <input
+          type="email"
+          name="registerEmailMobile"
+          [(ngModel)]="registerData.email"
+          required
+          placeholder="Correo"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="mb-4 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:lock" width="20"></iconify-icon>
+        </div>
+      <input
+  [type]="showPassword ? 'text' : 'password'"
+  name="registerPasswordMobile"
+  [(ngModel)]="registerData.password"
+  #password="ngModel"
+  required
+  pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$"
+  placeholder="Contraseña"
+  class="w-full border pl-12 pr-12 py-2 rounded-md bg-gray-100 focus:outline-none"
+/>
+
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          class="absolute right-3 top-1/2 -translate-y-1/2"
+        >
+          <iconify-icon
+            [icon]="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+            width="22"
+          ></iconify-icon>
+        </button>
+      </div>
+<div
+  *ngIf="password.invalid && password.touched"
+  class="mt-1 text-xs text-red-500"
+>
+  La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.
+</div>
+      <!-- CONFIRMAR PASSWORD -->
+      <div class="mb-6 relative">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2">
+          <iconify-icon icon="mdi:lock-check" width="20"></iconify-icon>
+        </div>
+        <input
+          type="password"
+          name="registerConfirmPasswordMobile"
+          [(ngModel)]="registerData.confirmPassword"
+          required
+          placeholder="Confirmar contraseña"
+          class="w-full border pl-12 pr-4 py-2 rounded-md bg-gray-100 focus:outline-none"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full py-3 rounded-full bg-[#00A89D] text-white font-semibold text-lg hover:bg-[#009387]"
+      >
+        Registrarse
+      </button>
+
+    </form>
+
+    <button
+      (click)="toggleMode()"
+      class="mt-6 text-center text-gray-600 underline"
+    >
+      ¿Ya tienes cuenta? Inicia sesión
+    </button>
+
+    <div *ngIf="error" class="mt-4 text-red-500 text-center text-sm">
+      {{ error }}
+    </div>
+  </div>
+</div>
+
 
         </div>
       </div>
@@ -409,5 +549,28 @@
 
     </div>
 
+  </div>
+</div>
+<!-- INPUT DE 2FA CENTRADO -->
+<div *ngIf="mostrarModalOTP"
+     class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+  <div class="w-full max-w-md p-6 border rounded-md bg-gray-50 shadow-lg">
+    <h3 class="text-lg font-semibold mb-2 text-center">Código de verificación 2FA</h3>
+    <p class="text-sm text-gray-600 text-center mb-4">
+      Ingresa el código que recibiste en tu correo
+    </p>
+
+    <input type="text"
+           [(ngModel)]="tokenTemporal"
+           maxlength="6"
+           class="w-full border px-4 py-2 rounded-md focus:outline-none mb-3 text-center tracking-widest text-lg"
+           placeholder="Código de 6 dígitos" />
+
+    <button (click)="verificarCodigo2FA()"
+            class="w-full py-2 rounded-full bg-[#00A89D] text-white font-semibold hover:bg-[#00897F] transition">
+      Verificar
+    </button>
+
+    <div *ngIf="error" class="text-red-500 text-sm mt-2 text-center">{{ error }}</div>
   </div>
 </div>

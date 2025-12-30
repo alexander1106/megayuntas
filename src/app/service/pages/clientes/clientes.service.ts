@@ -5,8 +5,14 @@ import { environment } from '../../../environment';
 
 export interface Cliente {
   id: number;
-  nombreCliente: string;
-  imagenCliente: string;
+  nombre: string;
+  apellido: string;
+  nombreEmpresa?: string;  // ? indica que puede ser null o undefined
+  ruc?: string;
+  telefono?: string;
+  contacto?: string;
+  grupo?: string;
+  mostrarEnWeb?: any
 }
 
 @Injectable({

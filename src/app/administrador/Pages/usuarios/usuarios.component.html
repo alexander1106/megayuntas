@@ -72,8 +72,10 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let u of usuarios">
-              <td class="px-2 text-center whitespace-nowrap w-auto text-xs">{{ u.id }}</td>
+<tr *ngFor="let u of usuarios; let i = index">
+              <td class="px-2 text-center whitespace-nowrap w-auto text-xs oculto">{{ u.id }}</td>
+              <td class="px-2 text-center whitespace-nowrap w-auto text-xs">{{ i + 1 }}</td>
+
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.nombres }}</td>
               <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.apellidos }}</td>
                             <td class="px-3 md:px-6 text-center whitespace-nowrap text-xs">{{ u.dni }}</td>

@@ -1,21 +1,21 @@
+// src/app/service/admin/usuario/usuario.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 
 @Injectable({
+
   providedIn: 'root'
+
 })
 export class UsuariosService {
 
-  // Asegúrate de que environment.apiUrl sea la base (ej: http://localhost:8080/api)
-  private apiUrl = environment.apiUrl; 
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
-  /** * Genera los headers con el Token JWT.
-   * Es CRUCIAL para que el backend identifique quién hace la petición (Auditoría).
-   */
+  /** Si no estás usando interceptor, descomenta esto y pásalo en cada llamada */
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || '';
     return new HttpHeaders({
@@ -24,47 +24,47 @@ export class UsuariosService {
     });
   }
 
-  /** * Listar todos los usuarios.
-   * Se asume que el backend devuelve IDs encriptados (strings).
-   */
+  /** Listar todos los usuarios */
   getUsuarios(): Observable<any> {
-    // Si tu backend usa /auth/usuarios cámbialo aquí, pero lo estándar es /usuarios
     return this.http.get(
-      `${this.apiUrl}/usuarios`,
+      `${this.apiUrl}/auth/usuarios`,
       { headers: this.getAuthHeaders() }
     );
   }
 
-  /** * Crear un nuevo usuario.
-   */
+  /** Crear un nuevo usuario */
   crearUsuario(usuario: any): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/usuarios`,
+      `${this.apiUrl}/auth/usuarios`,
       usuario,
       { headers: this.getAuthHeaders() }
     );
   }
 
-  /** * Actualizar usuario.
-   * Se envía el objeto completo (incluyendo el ID string) en el body.
-   */
+  /** Actualizar un usuario existente */
   actualizarUsuario(usuario: any): Observable<any> {
-    console.log('Actualizando usuario:', usuario);
+    const headers = this.getAuthHeaders(); // Asegúrate que esto incluya el token válido
+
+    // Según el Swagger, el ID va en el body, no en la URL
+    const body = {
+      id: usuario.id,        // ← INCLUIR EL ID EN EL BODY
+      nombres: usuario.nombres,
+      apellidos: usuario.apellidos,
+      email: usuario.email
+    };
+
+    console.log('Datos a enviar:', body);
+
+    // URL sin el ID al final
     return this.http.put(
-      `${this.apiUrl}/usuarios`,
-      usuario, // El ID va dentro de este objeto
-      { headers: this.getAuthHeaders() }
+      `${this.apiUrl}/usuarios`,  // ← SIN /${usuario.id}
+      body,
+      { headers }
     );
   }
 
-  /** * Eliminar usuario por ID.
-   * Se usa el verbo DELETE y se pasa el ID (hash) en la URL.
-   */
-  eliminarUsuario(idEncriptado: string): Observable<any> {
-    // RESTful estándar: DELETE /api/usuarios/{id}
-    return this.http.delete(
-      `${this.apiUrl}/usuarios/${idEncriptado}`, 
-      { headers: this.getAuthHeaders() }
-    );
+  /** Eliminar un usuario (usa POST) */
+  eliminarUsuario(id: number): Observable<any> {
+      return this.http.post(`${this.apiUrl}/usuarios/eliminar?id=${id}`, {});
   }
 }

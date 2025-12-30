@@ -44,7 +44,6 @@ export class ClientesComponent implements OnInit {
   ngOnInit(): void {
     this.clientesService.obtenerClientes().subscribe({
       next: (data) => {
-        this.clientes = data;
         this.totalClientes = data.length;
         this.actualizarClientesPaginados();
       },

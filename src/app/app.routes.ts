@@ -10,15 +10,15 @@ export const routes: Routes = [
     path: '',
     component: PaginaWebComponent,
     children: [
-      { 
+      {
         path: 'inicio',
         loadComponent: () => import('./pagina-web/PAGE/inicio/inicio.component').then(m => m.InicioComponent)
       },
-      { 
+      {
         path: 'nosotros',
         loadComponent: () => import('./pagina-web/PAGE/nosotros/nosotros.component').then(m => m.NosotrosComponent)
       },
-      { 
+      {
         path: 'productos',
         loadComponent: () => import('./pagina-web/PAGE/productos/productos.component').then(m => m.ProductosComponent)
       },
@@ -26,15 +26,15 @@ export const routes: Routes = [
         path: 'vistaproducto/:id', // ⭐ Acepta el ID encriptado (String) automáticamente
         loadComponent: () => import('./pagina-web/PAGE/productos/vistaproducto/vistaproducto.component').then(m => m.VistaproductoComponent)
       },
-      { 
+      {
         path: 'consultas',
         loadComponent: () => import('./pagina-web/PAGE/consultas/consultas.component').then(m => m.ConsultasComponent)
       },
-      { 
+      {
         path: 'vistaconsulta/:id', // ⭐ Acepta el ID encriptado (String)
         loadComponent: () => import('./pagina-web/PAGE/consultas/vistaconsulta/vistaconsulta.component').then(m => m.VistaconsultaComponent)
       },
-      { 
+      {
         path: 'clientes',
         loadComponent: () => import('./pagina-web/PAGE/clientes/clientes.component').then(m => m.ClientesComponent)
       },
@@ -84,10 +84,7 @@ export const routes: Routes = [
         path: 'productos',
         loadComponent: () => import('./administrador/Pages/productos/productos.component').then(m => m.ProductosComponent)
       },
-      {
-        path: 'consultas',
-        loadComponent: () => import('./administrador/Pages/consultas/consultas.component').then(m => m.ConsultasComponent)
-      },
+
       // ⭐ NUEVA RUTA DE AUDITORÍA
       {
         path: 'auditoria',

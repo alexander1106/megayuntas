@@ -8,12 +8,11 @@ import { AuditoriaService, Auditoria } from '../../../service/admin/auditoria/au
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './auditoria.component.html',
-  styleUrls: ['./auditoria.component.css']
 })
 export class AuditoriaComponent implements OnInit {
   auditorias: Auditoria[] = [];
   cargando = false;
-  
+
   // Filtros
   busquedaUsuario = '';
   busquedaAccion = '';
@@ -40,7 +39,7 @@ export class AuditoriaComponent implements OnInit {
 
   buscar(): void {
     this.cargando = true;
-    
+
     if (this.busquedaUsuario.trim()) {
       // Filtrar por Usuario
       this.auditoriaService.getAuditoriasPorUsuario(this.busquedaUsuario).subscribe({
