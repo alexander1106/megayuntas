@@ -1,0 +1,86 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 animate-fade-in">
+  
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100">
+      
+      <div class="bg-teal-700 px-6 py-4 flex justify-between items-center">
+        <h3 class="text-white text-lg font-bold flex items-center">
+          <iconify-icon icon="mdi:shield-search" class="mr-2 text-xl"></iconify-icon>
+          Detalle de Auditoría #{{ auditoria?.id }}
+        </h3>
+        <button (click)="cerrarModal()" class="text-white hover:bg-teal-600 rounded-full p-1 transition">
+          <iconify-icon icon="mdi:close" class="text-2xl"></iconify-icon>
+        </button>
+      </div>
+  
+      <div class="p-6 overflow-y-auto max-h-[80vh]">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="text-xs font-bold text-gray-500 uppercase">Usuario</label>
+            <p class="text-gray-800 font-medium text-lg">{{ auditoria?.usuario }}</p>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-gray-500 uppercase">Fecha y Hora</label>
+            <p class="text-gray-800">{{ auditoria?.fecha | date:'medium' }}</p>
+          </div>
+        </div>
+  
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="text-xs font-bold text-gray-500 uppercase">Acción</label>
+            <div class="mt-1">
+              <span class="px-3 py-1 rounded-full text-sm font-bold"
+                [ngClass]="{
+                    'bg-green-100 text-green-800': auditoria?.accion === 'LOGIN',
+                    'bg-red-100 text-red-800': auditoria?.accion?.includes('ELIMINAR') || auditoria?.accion?.includes('DENEGADO'),
+                    'bg-blue-100 text-blue-800': auditoria?.accion?.includes('CREAR'),
+                    'bg-yellow-100 text-yellow-800': auditoria?.accion?.includes('ACTUALIZAR'),
+                    'bg-gray-100 text-gray-800': !['LOGIN','ELIMINAR','CREAR','ACTUALIZAR'].includes(auditoria?.accion || '')
+                }">
+                {{ auditoria?.accion }}
+              </span>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-gray-500 uppercase">IP de Origen</label>
+            <p class="font-mono text-gray-700 bg-gray-100 inline-block px-2 rounded">{{ auditoria?.ipAddress }}</p>
+          </div>
+        </div>
+  
+        <div class="mb-6">
+          <label class="text-xs font-bold text-gray-500 uppercase">Descripción</label>
+          <p class="text-gray-800 bg-gray-50 p-3 rounded border border-gray-100">{{ auditoria?.descripcion }}</p>
+        </div>
+  
+        <div class="border-t border-gray-200 my-4"></div>
+        
+        <h4 class="text-sm font-bold text-teal-700 mb-3 uppercase">Información Técnica</h4>
+  
+        <div class="mb-4">
+          <label class="text-xs font-bold text-gray-500">Endpoint Solicitado</label>
+          <div class="flex items-center mt-1">
+            <span class="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded mr-2">{{ auditoria?.metodoHttp }}</span>
+            <code class="text-sm text-blue-600">{{ auditoria?.endpoint }}</code>
+          </div>
+        </div>
+  
+        <div *ngIf="auditoria?.requestData" class="mb-4">
+          <label class="text-xs font-bold text-gray-500">Datos Enviados (Request)</label>
+          <pre class="json-box">{{ formatearJson(auditoria.requestData) }}</pre>
+        </div>
+  
+        <div *ngIf="auditoria?.responseData" class="mb-4">
+          <label class="text-xs font-bold text-gray-500">Respuesta (Response/Error)</label>
+          <pre class="json-box">{{ formatearJson(auditoria.responseData) }}</pre>
+        </div>
+  
+      </div>
+  
+      <div class="bg-gray-50 px-6 py-3 flex justify-end border-t border-gray-200">
+        <button (click)="cerrarModal()" class="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition shadow-md">
+          Cerrar
+        </button>
+      </div>
+  
+    </div>
+  </div>

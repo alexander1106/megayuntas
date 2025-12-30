@@ -25,9 +25,15 @@ export class SidebarComponent {
     { label: 'Clientes',       icon: 'mdi:account', route: 'clientes' },
     { label: 'Productos',      icon: 'mdi:cube-outline', route: 'productos' },
     { label: 'Consultas',      icon: 'mdi:clipboard-text', route: 'consultas' },
+    
+    // 👇 AGREGA ESTA LÍNEA 👇
+    { label: 'Auditoría',      icon: 'mdi:clipboard-text-clock-outline', route: 'auditoria' },
   ];
+
   menuItems2 = [
     { label2: 'Web',      icon: 'mdi:web', route: '/' },
+
+    //djakj
   ];
 
 }
