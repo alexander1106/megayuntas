@@ -6,14 +6,14 @@ import { EliminarUsuariosModalComponent } from './eliminar-usuarios-modal/elimin
 import { EditarUsuariosModalComponent } from './editar-usuarios-modal/editar-usuarios-modal.component';
 
 // Servicio: Verifica que esta sea la ruta correcta en tu proyecto actual
-import { UsuariosService } from '../../service/admin/usuario/usuario.service'; 
+import { UsuariosService } from '../../../service/admin/usuario/usuarios.service';
 
 // Librería PDF
 import jsPDF from 'jspdf';
 
-// --- INTERFAZ FUSIONADA ---
+
 interface Usuario {
-  id: string; // <-- SEGURO: String para hash encriptado
+  id: string; 
   nombres: string;
   apellidos: string;
   email: string;
@@ -211,7 +211,7 @@ export class UsuariosComponent implements OnInit {
         this.cerrarModalEliminar();
         this.cargarUsuarios();
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Error al eliminar Usuario:', err);
       }
     });
