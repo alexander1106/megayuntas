@@ -13,9 +13,9 @@ import { EditarAdministradoresModalComponent } from './editar-administradores-mo
   templateUrl: './administradores.component.html',
   styleUrls: ['./administradores.component.css'],
   imports: [
-    CommonModule, 
+    CommonModule,
     AgregarAdministradoresModalComponent,
-    EditarAdministradoresModalComponent, 
+    EditarAdministradoresModalComponent,
     EliminarAdministradoresModalComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -27,7 +27,7 @@ export class AdministradoresComponent implements OnInit {
   mostrarModalAgregar = false;
   mostrarModalEditar = false;
   mostrarModalEliminar = false;
-  
+
   // ⭐ ID encriptado es string
   adminsIdAEliminar: string | null = null;
 
@@ -48,12 +48,12 @@ export class AdministradoresComponent implements OnInit {
   }
 
   trackByAdminId(index: number, admin: any): string {
-    return admin.id; 
+    return admin.id;
   }
 
   // --- AGREGAR ---
   abrirModalAgregar() { this.mostrarModalAgregar = true; }
-  
+
   cerrarModalAgregar() {
     this.mostrarModalAgregar = false;
     this.cargarAdministradores();
@@ -82,7 +82,7 @@ export class AdministradoresComponent implements OnInit {
     this.adminsIdAEliminar = null;
   }
 
-  eliminarAdministrador(id: string): void { // ⭐ Recibe String
+  eliminarAdministrador(id: any): void { // ⭐ Recibe String
     if (!id) return;
 
     this.administradorService.eliminarAdministrador(id).subscribe({

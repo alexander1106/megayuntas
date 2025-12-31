@@ -1,0 +1,131 @@
+.oculto{
+  display: none;
+}
+/* Contenedor general */
+body, html {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* gris suave */
+    color: #111827; /* texto oscuro */
+}
+
+/* HEADER */
+header {
+    background-color: #00796B; /* verde principal */
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+header input {
+    border-radius: 0.5rem;
+    border: 1px solid #b0bec5;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+}
+
+header input:focus {
+    outline: none;
+    border-color: #004d40;
+    box-shadow: 0 0 0 2px rgba(0,121,107,0.25);
+}
+
+/* TABLA - Desktop */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+thead th {
+    background-color: #00796B;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 0.75rem;
+}
+
+tbody td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+/* Botones de acciones */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* Cards - Mobile */
+.card {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.card p {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #065f46;
+    background-color: #d1fae5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+}
+
+/* Input buscador móvil */
+input#buscar-mobile {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    border-radius: 0.75rem;
+}
+
+/* Iconos */
+.iconify-icon {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.iconify-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Mensaje de tabla vacía */
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem 0;
+    font-size: 0.875rem;
+}

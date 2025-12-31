@@ -14,6 +14,12 @@ export interface Consultas{
   providedIn: 'root'
 })
 export class ConsultasService {
+  listarConsultas() {
+    throw new Error('Method not implemented.');
+  }
+  eliminarConsulta(consultaId: string) {
+    throw new Error('Method not implemented.');
+  }
   private api_url = environment.apiUrl + '/consultas';
 
   constructor(private httpClient: HttpClient) { }

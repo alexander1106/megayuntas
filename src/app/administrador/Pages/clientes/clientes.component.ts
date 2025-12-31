@@ -1,12 +1,12 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClientesService, Cliente } from '../../../service/clientes/clientes.service'; // Ruta a tu servicio
 
 // Modales
 import { AgregarClienteModalComponent } from './agregar-cliente-modal/agregar-cliente-modal.component';
 import { EditarClienteModalComponent } from './editar-cliente-modal/editar-cliente-modal.component';
 import { EliminarClienteModalComponent } from './eliminar-cliente-modal/eliminar-cliente-modal.component';
 import { LicenciaModalComponent } from './licencia-productos-modal/licencia-productos-modal.component';
+import { Cliente, ClientesService } from '../../../service/admin/clientes/clientes.service';
 
 @Component({
   selector: 'app-clientes',
@@ -23,6 +23,12 @@ import { LicenciaModalComponent } from './licencia-productos-modal/licencia-prod
   styleUrls: ['./clientes.component.css']
 })
 export class ClientesComponent implements OnInit {
+abrirModalLicencias(_t31: Cliente) {
+throw new Error('Method not implemented.');
+}
+descargarReporte() {
+throw new Error('Method not implemented.');
+}
   clientes: Cliente[] = [];
   cargandoClientes = false;
 
@@ -32,9 +38,9 @@ export class ClientesComponent implements OnInit {
   mostrarModalLicencias = false;
 
   clienteSeleccionado: Cliente | null = null;
-  
+
   // ⭐ String ID
-  clienteIdAEliminar: string | null = null; 
+  clienteIdAEliminar: string | null = null;
 
   constructor(private clientesSvc: ClientesService) {}
 
@@ -58,7 +64,7 @@ export class ClientesComponent implements OnInit {
 
   // --- Modales ---
   abrirModalAgregar(): void { this.mostrarModalAgregar = true; }
-  cerrarModalAgregar(): void { 
+  cerrarModalAgregar(): void {
     this.mostrarModalAgregar = false;
     this.cargarClientes();
   }

@@ -9,7 +9,7 @@ import { environment } from '../../../environment';
 export class UsuariosService {
 
   // Asegúrate de que environment.apiUrl sea la base (ej: http://localhost:8080/api)
-  private apiUrl = environment.apiUrl; 
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -30,7 +30,7 @@ export class UsuariosService {
   getUsuarios(): Observable<any> {
     // Si tu backend usa /auth/usuarios cámbialo aquí, pero lo estándar es /usuarios
     return this.http.get(
-      `${this.apiUrl}/usuarios`,
+      `${this.apiUrl}/auth/usuarios`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -60,9 +60,9 @@ export class UsuariosService {
   /** * Eliminar usuario por ID.
    * Se usa el verbo DELETE y se pasa el ID (hash) en la URL.
    */
-  eliminarUsuario(idEncriptado: string): Observable<any> {
+  eliminarUsuario(idEncriptado: any): Observable<any> {
     return this.http.delete(
-      `${this.apiUrl}/usuarios/${idEncriptado}`, 
+      `${this.apiUrl}/usuarios/${idEncriptado}`,
       { headers: this.getAuthHeaders() }
     );
   }
