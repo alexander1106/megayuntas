@@ -1,0 +1,7 @@
+[build]
+  command = "npm install && ng build"
+  publish = "dist/paginaweb/browser"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NETLIFY_USE_ANGULAR_RUNTIME = "false"
