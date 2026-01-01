@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && ng build"
+  command = "npm install && npx ng build"
   publish = "dist/paginaweb/browser"
 
 [build.environment]
