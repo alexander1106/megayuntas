@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://localhost:8080",
+    "target": "http://turistas.spring.informaticapp.com:9000",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

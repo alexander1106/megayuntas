@@ -25,14 +25,14 @@ interface ActualizarProductoDTO {
   providedIn: 'root'
 })
 export class ProductoService {
-  private apiUrl = 'http://localhost:8080/api/productos';
+  private apiUrl = 'http://turistas.spring.informaticapp.com:9000/api/productos';
 
   constructor(private http: HttpClient) { }
 
   // ============================================================================
   // LISTAR PRODUCTOS
   // ============================================================================
-  
+
   /**
    * Obtiene lista de productos del backend
    * Respuesta: { id: "Xy9-zRq2", nombre: "...", descripcion: "...", imagen: "..." }[]
@@ -44,7 +44,7 @@ export class ProductoService {
   // ============================================================================
   // OBTENER PRODUCTO POR ID ENCRIPTADO
   // ============================================================================
-  
+
   /**
    * Obtiene detalle de un producto específico
    * @param idEncriptado ID encriptado del backend (ej: "Xy9-zRq2")
@@ -57,7 +57,7 @@ export class ProductoService {
   // ============================================================================
   // CREAR PRODUCTO
   // ============================================================================
-  
+
   /**
    * Crea un nuevo producto
    * Respuesta: { idProducto: "Xy9-zRq2" }  ⭐ ID encriptado
@@ -69,7 +69,7 @@ export class ProductoService {
   // ============================================================================
   // ACTUALIZAR PRODUCTO
   // ============================================================================
-  
+
   /**
    * Actualiza un producto existente
    * @param dto Debe incluir ID encriptado
@@ -82,7 +82,7 @@ export class ProductoService {
   // ============================================================================
   // ELIMINAR PRODUCTO
   // ============================================================================
-  
+
   /**
    * Elimina un producto
    * @param idEncriptado ID encriptado (ej: "Xy9-zRq2")
@@ -95,7 +95,7 @@ export class ProductoService {
   // ============================================================================
   // MÉTODOS ANTIGUOS (MANTENER POR COMPATIBILIDAD SI ES NECESARIO)
   // ============================================================================
-  
+
   /**
    * Obtiene detalle completo del producto (con multimedia)
    * @param idEncriptado ID encriptado
